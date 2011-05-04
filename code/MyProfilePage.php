@@ -54,7 +54,7 @@ class MyProfilePage_Form extends Form {
 		$SQL_data = Convert::raw2sql($data);
 		$member = DataObject::get_by_id("Member", $SQL_data['ID']);
 		
-		if($SQL_data['Locale'] != $member->Locale) {
+		if(@$SQL_data['Locale'] != $member->Locale) {
 			$form->addErrorMessage("Generic", _t('Member.REFRESHLANG'),"good");
 		}
 		
