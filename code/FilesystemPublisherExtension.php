@@ -89,6 +89,18 @@ class FilesystemPublisherExtension extends SiteTreeDecorator {
 		}
 		return self::$cache_filter.(self::$cache_filter ? ' AND ' : '').self::$subclass_filter;
 	}
+	
+	/**
+	 * 
+	 * @param string $filter
+	 * @author Alex Hayes <alex.hayes@dimension27.com>
+	 */
+	static function add_cache_filter( $filter ) {
+		if( !empty(self::$cache_filter) ) {
+			self::$cache_filter .= ' AND ';
+		}
+		self::$cache_filter .= $filter;
+	}
 
 }
 
