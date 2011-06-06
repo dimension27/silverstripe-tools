@@ -2,7 +2,17 @@
 class FilesystemPublisherExtension extends SiteTreeDecorator {
 
 	public static $update_siblings_on_publish = true;
-	public static $cache_filter = "ClassName != 'UserDefinedForm'";
+	public static $exclude_classes = array('UserDefinedForm');
+	public static $cache_filter = '';
+	protected static $subclass_filter;
+
+	/**
+	 * Excludes the specified class and it's subclasses.
+	 * @param string $class
+	 */
+	static function exclude_class( $class ) {
+		self::$exclude_classes[] = $class;
+	}
 
 	/**
 	 * Return a list of all the pages to cache
@@ -11,10 +21,10 @@ class FilesystemPublisherExtension extends SiteTreeDecorator {
 		// Get each page type to define its sub-urls
 		$urls = array();
 		if( class_exists('Subsite') ) {
-			$pages = Subsite::get_from_all_subsites('SiteTree', self::$cache_filter);
+			$pages = Subsite::get_from_all_subsites('SiteTree', self::get_cache_filter());
 		}
 		else {
-			$pages = DataObject::get('SiteTree', self::$cache_filter);
+			$pages = DataObject::get('SiteTree', self::get_cache_filter());
 		}
 		foreach( $pages as $page ) {
 			$urls = array_merge($urls, $page->getURLsToCache());
@@ -40,10 +50,10 @@ class FilesystemPublisherExtension extends SiteTreeDecorator {
 		}
 		if( self::$update_siblings_on_publish ) {
 			if( $p = $this->owner->Parent ) {
-				$siblings = $p->Children();
+				$siblings = $p->Children(self::get_cache_filter());
 			}
 			else {
-				$siblings = DataObject::get('SiteTree', 'ParentID = 0 && '.self::$cache_filter);
+				$siblings = DataObject::get('SiteTree', 'ParentID = 0 && '.self::get_cache_filter());
 			}
 			foreach( $siblings as $sibling ) {
 				$urls[] = $sibling->AbsoluteLink();
@@ -64,6 +74,20 @@ class FilesystemPublisherExtension extends SiteTreeDecorator {
 			$urls[] = Director::absoluteBaseURL().'pagecomment/rss/'.$this->ID;
 		}
 		return $urls;
+	}
+
+	static function get_cache_filter() {
+		if( !isset(self::$subclass_filter) ) {
+			$excludeClasses = array();
+			foreach( self::$exclude_classes as $class ) {
+				$excludeClasses[] = $class;
+				foreach( ClassInfo::subclassesFor($class) as $subClass ) {
+					$excludeClasses[] = $subClass;
+				}
+			}
+			self::$subclass_filter = ($excludeClasses ? "ClassName NOT IN ('".implode("', '", $excludeClasses)."')" : '');
+		}
+		return self::$cache_filter.(self::$cache_filter ? ' AND ' : '').self::$subclass_filter;
 	}
 
 }
