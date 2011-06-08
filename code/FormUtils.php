@@ -34,7 +34,7 @@ class FormUtils {
 		return $tab;
 	}
 
-	static function makeDOM( FieldSet $fields, $controller, $fieldName, $newClass = null, $fromTab = null ) {
+	static function makeDOM( FieldSet $fields, $controller, $fieldName, $fromTab = null ) {
 		static $classes = array(
 			'ComplexTableField' => 'DataObjectManager',
 			'AssetTableField' => 'FileDataObjectManager',
@@ -44,7 +44,7 @@ class FormUtils {
 		$prefix = ($fromTab ? "$fromTab." : "Root.$fieldName.");
 		if( $field = $fields->fieldByName($prefix.$fieldName) ) {
 			$oldClass = get_class($field);
-			if( $newClass || ($newClass = @$classes[$oldClass]) ) {
+			if( $newClass = @$classes[$oldClass] ) {
 				$newField = new $newClass(
 					$controller, // controller
 					$field->Name(), // name
@@ -56,13 +56,11 @@ class FormUtils {
 					// sourceJoin
 				);
 				$fields->replaceField($fieldName, $newField);
-				$field = $newField;
 			}
 			else if( !in_array($oldClass, $classes) ) {
 				throw new Exception("No DataObjectManager has been defined as a replacement for the $oldClass class");
 			}
 		}
-		return $field;
 	}
 
 	/**
@@ -91,6 +89,15 @@ class FormUtils {
 				? $field->setUploadFolder($folder)
 				: $field->setFolderName($folder)
 		);
+	}
+
+	static function getFileCMSFields( $includeDescription = false ) {
+		$fields = new FieldSet(new TextField('Title'));
+		if( $includeDescription ) {
+			$fields->push(new SimpleTinyMCEField('Description'));
+		}
+		$fields->push(new ReadonlyField('Filename'));
+		return $fields;
 	}
 
 }
