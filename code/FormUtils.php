@@ -100,6 +100,16 @@ class FormUtils {
 		return $fields;
 	}
 
+	static function getSelectMap( DataObjectSet $set ) {
+		if( $set && $set->count() ) {
+			$rv = $set->map();
+		}
+		else {
+			$rv = array('' => '-- Empty --');
+		}
+		return $rv;
+	}
+
 }
 
 ?>

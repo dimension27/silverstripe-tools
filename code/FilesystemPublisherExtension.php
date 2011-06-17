@@ -1,4 +1,13 @@
 <?php
+/**
+ * Provides the most common FilesystemPublisher configuration as an extension, with support for:
+ * 
+ * - Regenerating cached sibling nodes on publish
+ * - Excluding Page types and their subclasses from inclusion in the cache
+ * - A filter for excluding nodes from the cache
+ * 
+ * Usage: SiteTree::add_extension('SiteTree', 'FilesystemPublisherExtension');
+ */
 class FilesystemPublisherExtension extends SiteTreeDecorator {
 
 	public static $update_siblings_on_publish = true;
