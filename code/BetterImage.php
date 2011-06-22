@@ -1,13 +1,15 @@
 <?php
 /**
- * Prevents creation of resized images if the uploaded file already fits the requested dimensions
+ * Prevents creation of resized images if the uploaded file already
+ * fits the requested dimensions
  */
-class BetterImage extends Image {
-   
+class BetterImage extends Image
+{   
 	public function SetWidth($width) {
 		if($width == $this->getWidth()){
 			return $this;
 		}
+
 		return parent::SetWidth($width);
 	}
 
@@ -15,6 +17,7 @@ class BetterImage extends Image {
 		if($height == $this->getHeight()){
 			return $this;
 		}
+
 		return parent::SetHeight($height);
 	}
 
@@ -22,6 +25,7 @@ class BetterImage extends Image {
 		if($width == $this->getWidth() && $height == $this->getHeight()){
 			return $this;
 		}
+
 		return parent::SetSize($width, $height);
 	}
 
@@ -29,6 +33,7 @@ class BetterImage extends Image {
 		if($width == $this->getWidth() && $height == $this->getHeight()){
 			return $this;
 		}
+
 		return parent::SetRatioSize($width, $height);
 	}
 
@@ -41,13 +46,12 @@ class BetterImage extends Image {
 					$preserveOriginal = ($arg1 == $size[0] && $arg2 == $size[1]);
 					break;
 			}
+
 			if($preserveOriginal){
 				return $this;
-			}
-			else {
+			} else {
 				return parent::getFormattedImage($format, $arg1, $arg2);
 			}
 		}
 	}
-
 }
