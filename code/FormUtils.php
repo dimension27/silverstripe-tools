@@ -34,7 +34,7 @@ class FormUtils {
 		return $tab;
 	}
 
-	static function makeDOM( FieldSet $fields, $controller, $fieldName, $fromTab = null ) {
+	static function makeDOM( FieldSet $fields, $controller, $fieldName, $newClass = null, $fromTab = null ) {
 		static $classes = array(
 			'ComplexTableField' => 'DataObjectManager',
 			'AssetTableField' => 'FileDataObjectManager',
@@ -44,7 +44,7 @@ class FormUtils {
 		$prefix = ($fromTab ? "$fromTab." : "Root.$fieldName.");
 		if( $field = $fields->fieldByName($prefix.$fieldName) ) {
 			$oldClass = get_class($field);
-			if( $newClass = @$classes[$oldClass] ) {
+			if( $newClass || ($newClass = @$classes[$oldClass]) ) {
 				$newField = new $newClass(
 					$controller, // controller
 					$field->Name(), // name
@@ -56,6 +56,7 @@ class FormUtils {
 					// sourceJoin
 				);
 				$fields->replaceField($fieldName, $newField);
+				return $newField;
 			}
 			else if( !in_array($oldClass, $classes) ) {
 				throw new Exception("No DataObjectManager has been defined as a replacement for the $oldClass class");
@@ -91,8 +92,8 @@ class FormUtils {
 		);
 	}
 
-	static function getFileCMSFields( $includeDescription = false ) {
-		$fields = new FieldSet(new TextField('Title'));
+	static function getFileCMSFields( $includeDescription = false, $titleLabel = 'Title' ) {
+		$fields = new FieldSet(new TextField('Title', $titleLabel));
 		if( $includeDescription ) {
 			$fields->push(new SimpleTinyMCEField('Description'));
 		}
@@ -100,6 +101,39 @@ class FormUtils {
 		return $fields;
 	}
 
+	static function getLabel( $label, $name = null ) {
+		return new LiteralField($name, '<div class="field"><label>'.$label.'</label></div>');
+	}
+
+	static function getSelectMap( DataObjectSet $set ) {
+		if( $set && $set->count() ) {
+			$rv = $set->map();
+		}
+		else {
+			$rv = array('' => '-- Empty --');
+		}
+		return $rv;
+	}
+
+	static function getEnumDropdown( DataObject $dataObject, $fieldName, $title = null ) {
+		return new DropdownField($fieldName, $title, $dataObject->dbObject($fieldName)->enumValues());
+	}
+
+	static function addLinkFields( $fields, $options = null, $tabName = 'Root.Main' ) {
+		if( @$options['label'] ) {
+			$fields->addFieldToTab($tabName, self::getLabel($options['label']));
+		}
+		$fields->addFieldToTab($tabName, $field = new TextField('LinkLabel', 'Link label'));
+		$fields->addFieldToTab($tabName, $group = new SelectionGroup('LinkType', array(
+				'Internal//Link to a page on this website' => new TreeDropdownField('LinkTargetID', 'Link target', 'SiteTree'),
+				'External//Link to an external website' => new TextField('LinkTargetURL', 'Link target URL'),
+				'File//Download a file' => new TreeDropdownField('LinkFileID', 'Download file', 'File')
+		)));
+		if( @$options['openInLightbox'] ) {
+			$fields->addFieldToTab($tabName, new CheckboxField('OpenInLightbox', 'Open the link in a lightbox'));
+		}
+	}
+	
 }
 
 ?>
