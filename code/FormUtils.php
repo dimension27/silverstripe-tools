@@ -34,6 +34,16 @@ class FormUtils {
 		return $tab;
 	}
 
+	/**
+	 * Transforms a ComplexTableField or subclass into the corresponding DataObjectManager or subclass. 
+	 * @param FieldSet $fields
+	 * @param Controller $controller
+	 * @param string $fieldName
+	 * @param string $newClass The type of DataObjectManager to return 
+	 * @param string $fromTab The tab in which the ComplexTableField resides
+	 * @throws Exception
+	 * @return DataObjectManager
+	 */
 	static function makeDOM( FieldSet $fields, $controller, $fieldName, $newClass = null, $fromTab = null ) {
 		static $classes = array(
 			'ComplexTableField' => 'DataObjectManager',
