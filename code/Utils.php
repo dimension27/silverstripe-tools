@@ -7,6 +7,14 @@ class Utils {
 		}
 		return project();
 	}
+
+	public static function BasePath() {
+		return BASE_PATH;
+	}
+
+	public static function ProjectDir() {
+		return BASE_PATH.'/'.project();
+	}
 	
 	public static function GetURIFromID( $id ) {
 		if( $siteTree = DataObject::get_by_id('SiteTree', $id) ) {
