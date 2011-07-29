@@ -48,6 +48,32 @@ class Utils {
 		}
 		return self::customScript(str_replace($search, $replace, $script));
 	}
+
+	public static function createGroup( $code, $title, $description, $subsiteIds = null ) {
+		if( class_exists('Subsite') ) {
+			$oldState = Subsite::$disable_subsite_filter;
+			Subsite::disable_subsite_filter();
+		}
+		if( !$group = DataObject::get_one('Group', "Code = '$code'") ) {
+			$group = new Group();
+			$group->Title = $title;
+			$group->Description = $description;
+			$group->Code = $code;
+		}
+		if( $subsiteIds ) {
+			$group->AccessAllSubsites = false;
+			// you have to write() before calling setByIDList(), because the write adds the current subsite
+			$group->write();
+			$group->Subsites()->setByIDList($subsiteIds);
+		}
+		else {
+			$group->write();
+		}
+		if( class_exists('Subsite') ) {
+			Subsite::disable_subsite_filter($oldState);
+		}
+	}
+
 }
 
 ?>
