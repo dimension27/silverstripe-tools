@@ -1,20 +1,14 @@
 <?php
 
-class DataObjectFormController extends Page_Controller {
+abstract class DataObjectFormController extends Page_Controller {
 
 	public $dataObject;
 	public $dataObjectClass;
 	public $formClass = 'DataObjectForm';
 	public $formName = 'Form';
 	public $htmlID;
-
-	public function setDataObject( $dataObject ) {
-		$this->dataObject = $dataObject;
-		$this->dataObjectClass = get_class($dataObject);
-	}
-
+	
 	public function index( SS_HTTPRequest $request ) {
-		$this->request = $request;
 		$name = $this->formName;
 		return $this->render(array(
 			'Form' => $this->$name()
@@ -57,13 +51,11 @@ class DataObjectForm extends Form {
 	/**
 	 * @var DataObject
 	 */
-	protected $dataObject;
+	public $dataObject;
 
-	protected $successMessage;
+	public $successMessage;
 
-	protected $redirectOnComplete = 'complete';
-
-	function __construct( $controller, $name, $dataObject, $redirectOnComplete = null ) {
+	function __construct( $controller, $name, $dataObject ) {
 		$this->dataObject = $dataObject;
 		$fields = $dataObject->getCMSFields();
 		$fields->push(new HiddenField('ID', 'ID', $dataObject->ID));
@@ -73,9 +65,6 @@ class DataObjectForm extends Form {
 		$validator = null;
 		parent::__construct($controller, $name, $fields, $actions, $validator);
 		$this->loadDataFrom($dataObject);
-		if( $redirectOnComplete !== null ) {
-			$this->redirectOnComplete = $redirectOnComplete;
-		}
 	}
 
 	function doSave( $data, Form $form ) {
@@ -84,15 +73,10 @@ class DataObjectForm extends Form {
 			return Director::redirectBack();
 		}
 		$form->saveInto($this->dataObject);
-		try {
-			$this->dataObject->write();
-			$form->sessionMessage($this->getSuccessMessage(), 'good');
-			return ($this->redirectOnComplete ? Director::redirect($this->redirectOnComplete) : Director::redirectBack());
-		}
-		catch( ValidationException $e ) {
-			$form->sessionMessage($e->getResult()->message(), 'good');
-			return Director::redirectBack();
-		}
+		$this->dataObject->write();
+		$form->sessionMessage($this->getSuccessMessage(), 'good');
+		// @todo Redirect to /complete to display the OnComplete content (see UserDefinedForm example)
+		Director::redirect('complete');
 	}
 
 	function getSuccessMessage() {
