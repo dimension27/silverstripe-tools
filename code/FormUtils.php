@@ -25,6 +25,28 @@ class FormUtils {
 		return $rv;
 	}
 
+	static function flattenTabs( $fields ) {
+		$flattened = new FieldSet();
+		foreach( $fields as $field ) {
+			if( $field instanceof TabSet ) {
+				$tabSet = $field;
+				foreach( self::flattenTabs($tabSet->Tabs()) as $field ) {
+					$flattened->push($field);
+				}
+			}
+			else if( $field instanceof Tab ) {
+				$tab = $field;
+				foreach( $tab->Fields() as $field ) {
+					$flattened->push($field);
+				}
+			}
+			else {
+				$flattened->push($field);
+			}
+		}
+		return $flattened;
+	}
+
 	static function moveToTab( FieldSet $fields, $tabName, $fieldsToAdd, $tabTitle = null, $fromTab = 'Root.Main' ) {
 		$tab = $fields->findOrMakeTab($tabName, $tabTitle);
 		$fieldsToAdd = self::create_fieldset($fields, $fieldsToAdd, $fromTab);
