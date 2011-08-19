@@ -1,21 +1,42 @@
 <?php
-class SSTools_Scheduling_Event extends Object {
-	protected $start = null;
-	protected $end = null;
+class SSTools_Scheduling_Event extEnds ViewableData {
+	/**
+	 * The Start of the event.
+	 * @var DateTime
+	 */
+	protected $Start = null;
 	
-	protected $data = array();
+	/**
+	 * The End of the event.
+	 * @var DateTime
+	 */
+	protected $End = null;
 	
-	public function __construct(DateTime $start = nul, DateTime $end = null) {
-		$this->start = $start;
-		$this->end = $end;
+	/**
+	 * Arbitrary content for the event.
+	 * @var mixed
+	 */
+	protected $content = null;
+	
+	public function __construct(DateTime $Start = null, DateTime $End = null, $content = null) {
+		parent::__construct();
+		$this->Start = $Start;
+		$this->End = $End;
+		$this->content = $content;
 	}
 	
-	public function addData($data, $key = null) {
-		if (is_null($key)) {
-			$this->data[] = $data;
+	public function getEnd() {
+		if (is_null($this->End)) {
+			$this->End = clone($this->Start);
 		}
-		else {
-			$this->data[$key] = $data;
-		}
+		return $this->End;
+	}
+	
+	public function setContent($content) {
+		$this->content = $content;
+	}
+	
+	public function getContent() {
+		return $this->content;
 	}
 }
