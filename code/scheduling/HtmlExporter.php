@@ -8,7 +8,7 @@ class SSTools_Scheduling_HtmlExporter extends SSTools_Scheduling_Exporter {
 	protected function setup() {
 		parent::setup();
 		$this->count = 0;
-		$this->exported .= 
+		$this->exported = 
 <<<EOS
 <div class="schedule">
 	<h2>{$this->Schedule->getTitle(true, $this->dateFormat)}</h2>

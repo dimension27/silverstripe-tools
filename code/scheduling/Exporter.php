@@ -84,7 +84,7 @@ abstract class SSTools_Scheduling_Exporter extends ViewableData {
 		if ($this->eventRenderer) {
 			return call_user_func($this->eventRenderer, $event);
 		}
-		return $event->content();
+		return $event->getContent();
 	}
 	
 	/**
