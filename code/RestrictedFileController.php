@@ -42,7 +42,7 @@ class RestrictedFileController extends Controller {
 	 * <code>
 	 * // public/assets/.htaccess
 	 * RewriteEngine On
-	 * RewriteRule ^([private].*)$ /restricted-file/negotiate?route=assets/$1 [NC]
+	 * RewriteRule ^([private].+)$ /restricted-file/negotiate?route=assets/$1 [NC]
 	 * 
 	 * // mysite/_config.php
 	 * Director::addRules(100, array(
@@ -100,7 +100,7 @@ class RestrictedFileController extends Controller {
 		$subject = $request->getVar('route');
 		foreach( self::$routes as $pattern => $url ) {
 			if( preg_match($pattern, $subject, $matches) ) {
-				$getVars = $request->getVars();
+				$_GET['url'] = $subject;
 				foreach( $matches as $key => $value ) {
 					if( !is_numeric($key) ) {
 						// Only add non-numeric (ie.. named) matches to the request.
