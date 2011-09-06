@@ -100,7 +100,6 @@ class RestrictedFileController extends Controller {
 		$subject = $request->getVar('route');
 		foreach( self::$routes as $pattern => $url ) {
 			if( preg_match($pattern, $subject, $matches) ) {
-				$_GET['url'] = $subject;
 				foreach( $matches as $key => $value ) {
 					if( !is_numeric($key) ) {
 						// Only add non-numeric (ie.. named) matches to the request.
@@ -122,7 +121,10 @@ class RestrictedFileController extends Controller {
 			."\tRewriteEngine On\n";
 		foreach( self::$routes as $pattern => $url ) {
 			$pattern = str_replace('assets/', '', substr($pattern, 1, -1));
-			echo "\tRewriteRule ^($pattern)$ /restricted-file/negotiate?route=assets/$1 [NC]\n";
+			if( !preg_match('/^\(.*\)$/', $pattern) ) {
+				$pattern = "($pattern)";
+			}
+			echo "\tRewriteRule ^$pattern$ /restricted-file/negotiate?route=assets/$1 [NC]\n";
 		}
 		echo "</IfModule>\n";
 	}
