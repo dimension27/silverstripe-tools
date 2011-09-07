@@ -1,0 +1,12 @@
+.MeasureField  {
+    margin-left: 0px !important;
+}
+.MeasureField.CompositeField input {
+    width: 20px !important;
+    float: left;
+} 
+.MeasureField.CompositeField .lastcolumn {
+    margin-left: 20px !important;
+    margin-top: 2px;
+    width: 100px !important; 
+} 
