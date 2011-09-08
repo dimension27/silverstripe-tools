@@ -81,7 +81,15 @@ class Utils {
 			Subsite::disable_subsite_filter($oldState);
 		}
 	}
-
+	
+	/**
+	 * Returns the full url to the current page.
+	 */
+	public static function currentURL() {
+		$base = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+		$protocol = (empty($_SERVER['HTTPS'])) ? 'https' : 'http';
+		return $protocol.'://'.$base;
+	}
 }
 
 ?>
