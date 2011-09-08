@@ -1,0 +1,2 @@
+$Content
+<% include FAQPage %>
