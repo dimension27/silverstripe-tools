@@ -1,7 +1,7 @@
 <?php
 /**
  * Adds a facebook like button to a template. Requires that the page has been initialised using 
- * SSTools_Social_FacebookInit.
+ * SSTools_Social_FacebookInit, if using the JS SDK.
  * @author sergeim
  *
  */
@@ -102,58 +102,6 @@ class SSTools_Social_FacebookLikeButton extends Object implements SSTools_Core_R
 	 */
 	function forTemplate(){
 		return ($this->appId) ? $this->asXFBML() : $this->asIframe();
-		$prefix = $this->appId ? 'data-':'';
-		
-		$attributes = array();
-		foreach (array(
-		'URL' => 'href',
-		'ShowFaces' => 'show-faces',
-		'IncludeSend' => 'send',
-		'ColorScheme' => 'colorscheme',
-		'Width' => 'width',
-		'Layout' => 'layout',
-		) as $property => $name) {
-			$value = $this->$property;
-			if (!is_null($value)) {
-				if (is_bool($value)) {
-					$value = $value ? 'true' : 'false';
-				}
-				else {
-					$value = Convert::raw2att($value);
-				}
-				if ($this->appId) {
-					$value = Convert::raw2att($value);
-					$attributes[] = $prefix.$name.'="'.$value.'"';
-				}
-				else {
-					$attributes[] = $prefix.$name.'='.$value;
-				}
-			}
-		}
-		if ($this->appId) {
-			$dataAttributesString = implode(' ', $attributes);
-			return <<<EOS
-<script>(function(d){
-  var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
-  js = d.createElement('script'); js.id = id; js.async = true;
-  js.src = "//connect.facebook.net/en_US/all.js#appId={$this->appId}&xfbml=1";
-  d.getElementsByTagName('head')[0].appendChild(js);
-}(document));</script>
-<div class="fb-like" {$dataAttributesString}></div>
-EOS;
-		}
-		else {
-			if (!$this->URL) {
-				$attributes[] = 'href='.Utils::currentURL();
-			}
-			$queryString = implode('&', $attributes);
-			return <<<EOS
-<iframe src="http://www.facebook.com/plugins/like.php?$queryString"
-        scrolling="no" frameborder="0"
-        style="border:none; width:{$this->Width}px; height:{$this->Height}px"></iframe>
-EOS;
-			
-		}
 	}
 	
 	protected function asXFBML() {
