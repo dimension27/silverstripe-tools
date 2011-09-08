@@ -114,17 +114,41 @@ class RestrictedFileController extends Controller {
 	}
 
 	/**
+	 * Authorise and send a document to the client if they match the MemberID in the request or are an admin.
+	 * @param SS_HTTPRequest $request
+	 */
+	public static function handleMemberDocumentRequest( SS_HTTPRequest $request, Controller $controller ) {
+		$member = Member::currentUser(); /* @var $member Member */
+		$Filename = $request->requestVar('Filename');
+		if( $member && (($member->ID == $request->requestVar('MemberID')) || Permission::check('ADMIN')) ) {
+			if( $file = DataObject::get_one('File', "Filename = '".Convert::raw2sql($Filename)."'") ) {
+				return $request->send_file(
+					file_get_contents($file->getFullPath()),
+					basename($file->getFilename())
+				);
+			}
+			else {
+				$controller->httpError(404, "File does not exist for filename '$Filename'");
+			}
+		}
+		else {
+			$controller->httpError(403, "Access denied");
+		}
+	}
+
+	/**
 	 * Outputs the mod_rewrite commands for your routes to be added into assets/.htaccess.
 	 */
 	public static function get_rewrites() {
 		echo "<IfModule mod_rewrite.c>\n"
 			."\tRewriteEngine On\n";
 		foreach( self::$routes as $pattern => $url ) {
-			$pattern = str_replace('assets/', '', substr($pattern, 1, -1));
-			if( !preg_match('/^\(.*\)$/', $pattern) ) {
-				$pattern = "($pattern)";
-			}
-			echo "\tRewriteRule ^$pattern$ /restricted-file/negotiate?route=assets/$1 [NC]\n";
+			// handle any modifiers after the delimiter
+			$delimiter = substr($pattern, 0, 1);
+			$pattern = preg_replace("$delimiter^\\$delimiter(.+)\\$delimiter.*?$$delimiter", '\1', $pattern);
+			// remove assets from the pattern
+			$pattern = str_replace('assets/', '', $pattern);
+			echo "\tRewriteRule ^$pattern$ /restricted-file/negotiate?route=assets/$0 [NC]\n";
 		}
 		echo "</IfModule>\n";
 	}
