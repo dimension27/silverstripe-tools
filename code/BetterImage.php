@@ -56,7 +56,18 @@ class BetterImage extends Image
 	}
 	
 	public function getSizedTag($width = null, $height = null) {
-		$image = $this->SetRatioSize($widht, $height);
+		if (is_null($width) && is_null($height)){
+			$image = $this;
+		}
+		else {
+			if (is_null($width)) {
+				$width = $this->getWidth();
+			}
+			if (is_null($height)) {
+				$height = $this->getHeight();
+			}
+			$image = $this->SetRatioSize($width, $height);
+		}
 		$fileName = Director::baseFolder() . '/' . $image->Filename;
 		if(file_exists($fileName)) {
 			$url = $image->getURL();
