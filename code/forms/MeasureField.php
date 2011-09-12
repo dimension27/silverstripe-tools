@@ -6,6 +6,12 @@
 class SSTools_Forms_MeasureField extends CompositeField {
 	
 	/**
+	 * Whether or not to force showing an overall title for the composite field.
+	 * @var boolean
+	 */
+	public $ShowTitle = true;
+	
+	/**
 	 * @var $columnCount int Toggle different css-rendering for multiple columns 
 	 * ("onecolumn", "twocolumns", "threecolumns"). The content is determined
 	 * by the $children-array, so wrap all items you want to have grouped in a
@@ -16,6 +22,7 @@ class SSTools_Forms_MeasureField extends CompositeField {
 	protected $columnCount = 2;
 	
 	public function __construct($valueField, $unitsField = null) {
+		Requirements::css(SS_TOOLS_DIR.'/css/MeasureField.css');
 		if (is_string($valueField)) {
 			$valueField = new NumericField($valueField);
 		}
@@ -33,6 +40,7 @@ class SSTools_Forms_MeasureField extends CompositeField {
 	 * Returns the fields nested inside another DIV
 	 */
 	function FieldHolder() {
+		$this->columnCount = $this->ShowTitle ? 3 : 2;
 		return $this->getFieldHolderContent('Field');
 	}
 	
@@ -40,6 +48,7 @@ class SSTools_Forms_MeasureField extends CompositeField {
 	 * Returns the fields in the restricted field holder inside a DIV.
 	 */
 	function SmallFieldHolder() {
+		$this->columnCount = $this->ShowTitle ? 3 : 2;
 		return $this->getFieldHolderContent('Field');
 	}	
 }

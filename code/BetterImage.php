@@ -54,4 +54,20 @@ class BetterImage extends Image
 			}
 		}
 	}
+	
+	public function getSizedTag($width = null, $height = null) {
+		$image = $this->SetRatioSize($widht, $height);
+		$fileName = Director::baseFolder() . '/' . $image->Filename;
+		if(file_exists($fileName)) {
+			$url = $image->getURL();
+			if($image->Title) {
+				$title = Convert::raw2att($image->Title);
+			} else {
+				$title = $image->Filename;
+				if(preg_match("/([^\/]*)\.[a-zA-Z0-9]{1,6}$/", $title, $matches)) $title = Convert::raw2att($matches[1]);
+			}
+			$size = getimagesize($fileName);
+			return '<img src="'.$url.'" width="'.$size[0].'" height="'.$size[1].'" alt="'.$title.'" />';
+		}
+	}
 }
