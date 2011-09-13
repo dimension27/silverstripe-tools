@@ -21,6 +21,23 @@ class GooglePlacesField extends TextField {
 		}
 	}
 
+	/**
+	 * @param Validator $validator
+	 * @return String
+	 */
+	function validate($validator){
+		if( !$this->dataValue($this->value) ) {
+ 			$validator->validationError(
+ 				$this->name,
+				'Invalid Google Places URL - should contain "cid=[number]"',
+				"validation"
+			);
+			return false;
+		} else{
+			return true;
+		}
+	}
+
 }
 
 ?>
