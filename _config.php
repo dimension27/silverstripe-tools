@@ -6,4 +6,8 @@ if( Director::is_cli() ) {
 		'ss-tools' => 'SSToolsController',
 	));
 }
+
+Object::add_extension('FeaturePageItem', 'LinkFieldsDecorator');
+SortableDataObject::add_sortable_class('FeaturePageItem');
+
 ?>
