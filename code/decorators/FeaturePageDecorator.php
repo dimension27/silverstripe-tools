@@ -3,60 +3,34 @@
 /**
  * Example usage:
  * Object::add_extension('HomePage', 'FeaturePageDecorator');
- * // Controls the maximum number of feature items that will be displayed
- * FeaturePageDecorator::$maxNumFeatureItems = 9;
- * // Specifies that the feature items should alway be displayed in multiples of 3
- * FeaturePageDecorator::$forceFeatureItemsMultiple = 3; 
+ * // Controls the maximum number of items that will be displayed
+ * FeaturePageDecorator::$maxNumItems = 9;
+ * // Specifies that the items should alway be displayed in multiples of 3
+ * FeaturePageDecorator::$forceItemsMultiple = 3; 
  * @author simonwade
  *
  */
-class FeaturePageDecorator extends SiteTreeDecorator {
+class FeaturePageDecorator extends LinkListDecorator {
 
-	// @todo Add $db control over $maxNumFeatureItems and $forceFeatureItemsMultiple
-	/**
-	 * Controls the maximum number of feature items that will be displayed
-	 * @var int
-	 */ 
-	public static $maxNumFeatureItems = null;
-
-	/**
-	 * Specifies that the feature items should alway be displayed in multiples of X
-	 * @var int
-	 */ 
-	public static $forceFeatureItemsMultiple = null;
+	static $relationshipName = 'FeatureItems';
+	static $itemClassName = 'FeaturePageDecorator_Item';
 
 	public function extraStatics() {
 		return array(
 			'has_many' => array(
-				'FeatureItems' => 'FeaturePageItem.Parent'
+				'FeatureItems' => 'FeaturePageDecorator_Item.Parent'
 			)
 		);
 	}
 
-	function updateCMSFields( FieldSet $fields ) {
-		$fields->addFieldToTab('Root.Content.FeatureItems', $field = new DataObjectManager(
-			$this->owner, // controller
-			'FeatureItems', // name
-			'FeaturePageItem' // sourceClass
-		));
-		$field->setParentIdName('ParentID');
-	}
-
 	function FeatureItems() {
-		$items = $this->owner->getComponents('FeatureItems'); /* @var $items DataObjectSet */
-		if( self::$maxNumFeatureItems ) {
-			$items = $items->getRange(0, self::$maxNumFeatureItems);
-		}
-		if( self::$forceFeatureItemsMultiple ) {
-			$items = $items->getRange(0, floor($items->Count() / self::$forceFeatureItemsMultiple)
-					* self::$forceFeatureItemsMultiple);
-		}
-		return $items;
+		$items = $this->owner->getComponents(self::$relationshipName); /* @var $items DataObjectSet */
+		return $this->handleItemSet($item);
 	}
 
 }
 
-class FeaturePageItem extends DataObject {
+class FeaturePageDecorator_Item extends DataObject {
 
 	static $db = array(
 		'Title' => 'Varchar(255)',
@@ -72,6 +46,10 @@ class FeaturePageItem extends DataObject {
 		'Image' => 'BetterImage',
 		'LinkTarget' => 'SiteTree',
 		'LinkFile' => 'File',
+	);
+
+	static $summary_fields = array(
+		'Title'
 	);
 
 	public function getCMSFields() {
