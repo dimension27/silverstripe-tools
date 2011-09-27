@@ -52,16 +52,23 @@ class FeaturePageDecorator_Item extends DataObject {
 		'Title'
 	);
 
+	static $plural_name = 'Feature Item';
+
 	public function getCMSFields() {
 		$fields = FormUtils::createMain();
 		$fields->addFieldToTab('Root.Main', $field = new TextField('Title'));
 		$fields->addFieldToTab('Root.Main', $field = new SimpleTinyMCEField('Teaser'));
 		$fields->addFieldToTab('Root.Main', $field = new ImageUploadField('Image'));
 		UploadFolderManager::setUploadFolderForObject($this, $field);
-		LinkFields::addLinkFields($fields);
+		LinkFields::addLinkFields($fields, null, 'Root.Link');
 		return $fields;
 	}
 
 }
+
+UploadFolderManager::setOptions('FeaturePageDecorator_Item', array(
+	'folder' => 'Uploads/FeatureItems',
+	'date' => null
+));
 
 ?>

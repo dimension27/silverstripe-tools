@@ -37,6 +37,14 @@ class BetterImage extends Image
 		return parent::SetRatioSize($width, $height);
 	}
 
+	public function SetPaddedSize($width, $height) {
+		return $this->getFormattedImage('PaddedImage', $width, $height);
+	}
+
+	public function SetCroppedSize($width, $height) {
+		return $this->getFormattedImage('CroppedImage', $width, $height);
+	}
+	
 	public function getFormattedImage($format, $arg1 = null, $arg2 = null) {
 		if($this->ID && $this->Filename && Director::fileExists($this->Filename)) {
 			$size = getimagesize(Director::baseFolder() . '/' . $this->getField('Filename'));

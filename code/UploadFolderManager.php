@@ -48,8 +48,32 @@ class UploadFolderManager implements IUploadFolderManager {
 	}
 
 	function getUploadFolderForObject( DataObject $dataObject, FormField $field ) {
-		$folder = preg_replace('/[^[:alnum:]]/', '', $dataObject->plural_name());
-		return 'Uploads/'.$folder.'/'.date('Y');
+		$options = isset(self::$options[get_class($dataObject)])
+				? self::$options[get_class($dataObject)]
+				: self::$defaultOptions;
+		$folder = $options['folder']
+				? $options['folder']
+				: 'Uploads/'.preg_replace('/[^[:alnum:]]/', '', $dataObject->plural_name());
+		$folder .= $options['date']
+				? '/'.date($options['date']) : '';
+		$folder .= $options['ID']
+				? '/'.$dataObject->ID : '';
+		$folder .= $options['Title']
+				? '/'.preg_replace('/[^[:alnum:]]/', '', $dataObject->getTitle()) : '';
+		
+		return $folder;
+	}
+
+	public static $options = array();
+	public static $defaultOptions = array(
+		'folder' => null,
+		'date' => 'Y',
+		'ID' => null,
+		'Title' => null,
+	);
+
+	static function setOptions( $className, $options ) {
+		self::$options[$className] = array_merge(self::$defaultOptions, $options);
 	}
 
 }
