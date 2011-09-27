@@ -47,7 +47,7 @@ class FilesystemPublisherExtension extends SiteTreeDecorator {
 		// Defines any pages which should not be cached
 		$excluded = array();
 		$urls = array();
-		if( $this->owner->canView() ) {
+		if( $this->owner->canView(new Member(array('ID' => -1))) ) {
 			$urls[] = $this->owner->AbsoluteLink();
 		}
 		$urls = array_merge($urls, $this->owner->subPagesToCache());

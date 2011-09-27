@@ -2,11 +2,24 @@
 
 class FormUtils {
 
+	/**
+	 * Creates the standard FieldSet with a single Root.Main tab
+	 * @param string $title Defines the title for the Main tab
+	 * @return FieldSet
+	 */
+	static function createMain( $title = null ) {
+		$fields = new FieldSet();
+		$fields->push(new TabSet("Root", $mainTab = new Tab("Main")));
+		$mainTab->setTitle($title ? $title : _t('SiteTree.TABMAIN', "Main"));
+		return $fields;
+	}
+
 	static function createGroup( $title, FieldSet $fields, $fieldsToAdd, $fromTab = 'Root.Main' ) {
 		return new FieldGroup($title, self::create_fieldset($fields, $fieldsToAdd, $fromTab));
 	}
 
 	/**
+	 * Creates a FieldSet containing the $fieldsToAdd in $fields, removing each from $fields.
 	 * @param FieldSet $fields
 	 * @param array|FieldSet $fieldsToAdd
 	 * @param string $fromTab
@@ -96,16 +109,6 @@ class FormUtils {
 		}
 	}
 
-	/**
-	 * @return FieldSet
-	 */
-	static function createMain( $title = null ) {
-		$fields = new FieldSet();
-		$fields->push(new TabSet("Root", $mainTab = new Tab("Main")));
-		$mainTab->setTitle($title ? $title : _t('SiteTree.TABMAIN', "Main"));
-		return $fields;
-	}
-
 	static function removeFields( FieldSet $fields, $fieldsToRemove ) {
 		foreach( $fieldsToRemove as $fieldName ) {
 			$fields->removeByName($fieldName);
@@ -151,21 +154,93 @@ class FormUtils {
 		return new DropdownField($fieldName, $title, $dataObject->dbObject($fieldName)->enumValues());
 	}
 
+	/**
+	 * Requires the following fields for persistence:
+	 *   static $db => array(
+	 *   	'LinkType' => 'Enum("Internal, External, File")',
+	 *   	'LinkLabel' => 'Varchar(255)',
+	 * 	 	'LinkTargetURL' => 'Varchar(255)'
+	 *   );
+	 *   static $has_one => array(
+	 *   	'LinkTarget' => 'SiteTree',
+	 * 	 	'LinkFile' => 'File'
+	 *   );
+	 * If the openInLightbox option is used then also need:
+	 *   static $db => array(
+	 *   	'OpenInLightbox' => 'Boolean'
+	 *   );
+	 * You can use the LinkFields::getLink() method to render the HTML.
+	 * @param Fieldset $fields
+	 * @param array $options
+	 * @param string $tabName
+	 */
+	static function addLinkFields( $fields, $options = null, $tabName = 'Root.Main' ) {
+		return LinkFields::addLinkFields($fields, $options, $tabName);
+	}
+
+}
+
+class LinkFields {
+
+	/**
+	 * Requires the following fields for persistence:
+	 *   static $db => array(
+	 *   	'LinkType' => 'Enum("Internal, External, File")',
+	 *   	'LinkLabel' => 'Varchar(255)',
+	 * 	 	'LinkTargetURL' => 'Varchar(255)'
+	 *   );
+	 *   static $has_one => array(
+	 *   	'LinkTarget' => 'SiteTree',
+	 * 	 	'LinkFile' => 'File'
+	 *   );
+	 * If the openInLightbox option is used then also need:
+	 *   static $db => array(
+	 *   	'OpenInLightbox' => 'Boolean'
+	 *   );
+	 * You can use the LinkFields::getLink() method to render the HTML.
+	 * @param Fieldset $fields
+	 * @param array $options
+	 * @param string $tabName
+	 */
 	static function addLinkFields( $fields, $options = null, $tabName = 'Root.Main' ) {
 		if( @$options['label'] ) {
-			$fields->addFieldToTab($tabName, self::getLabel($options['label']));
+			$fields->addFieldToTab($tabName, new HeaderField($options['label'], null, 3));
 		}
 		$fields->addFieldToTab($tabName, $field = new TextField('LinkLabel', 'Link label'));
+		// Install the urlfield module for URL validation git://github.com/chillu/silverstripe-urlfield.git
+		$urlClass = class_exists('URLField') ? 'URLField' : 'TextField';
 		$fields->addFieldToTab($tabName, $group = new SelectionGroup('LinkType', array(
 				'Internal//Link to a page on this website' => new TreeDropdownField('LinkTargetID', 'Link target', 'SiteTree'),
-				'External//Link to an external website' => new TextField('LinkTargetURL', 'Link target URL'),
+				'External//Link to an external website' => new $urlClass('LinkTargetURL', 'Link target URL'),
 				'File//Download a file' => new TreeDropdownField('LinkFileID', 'Download file', 'File')
 		)));
+		
 		if( @$options['openInLightbox'] ) {
 			$fields->addFieldToTab($tabName, new CheckboxField('OpenInLightbox', 'Open the link in a lightbox'));
 		}
 	}
-	
+
+	static function getLinkURL( $obj ) {
+		switch( $obj->LinkType ) {
+			case 'External':
+				return $obj->LinkTargetURL;
+			case 'Internal':
+				if( ($target = $obj->LinkTarget()) && $target->exists() ) {
+					return $target->Link();
+				}
+				else {
+					return $obj->LinkTargetURL;
+				}
+				break;
+			case 'File':
+				if( ($target = $obj->LinkFile()) && $target->exists() ) {
+					return $target->Link();
+				}
+				break;
+		}
+		
+	}
+
 }
 
 ?>

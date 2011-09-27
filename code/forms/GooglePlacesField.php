@@ -26,7 +26,7 @@ class GooglePlacesField extends TextField {
 	 * @return String
 	 */
 	function validate($validator){
-		if( !$this->dataValue($this->value) ) {
+		if( $this->value && !$this->dataValue($this->value) ) {
  			$validator->validationError(
  				$this->name,
 				'Invalid Google Places URL - should contain "cid=[number]"',

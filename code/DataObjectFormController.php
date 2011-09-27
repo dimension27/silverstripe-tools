@@ -15,9 +15,8 @@ class DataObjectFormController extends Page_Controller {
 
 	public function index( SS_HTTPRequest $request ) {
 		$this->request = $request;
-		$name = $this->formName;
 		return $this->render(array(
-			'Form' => $this->$name()
+			'Form' => $this->{$this->formName}()
 		));
 	}
 
