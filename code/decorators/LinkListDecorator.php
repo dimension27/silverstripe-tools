@@ -41,7 +41,10 @@ class LinkListDecorator extends DataObjectDecorator {
 	}
 
 	function updateCMSFields( FieldSet $fields ) {
-		$this->addManager($fields, self::$relationshipName, self::$itemClassName);
+		$this->addManager($fields,
+			Object::get_static(get_class($this), 'relationshipName'),
+			Object::get_static(get_class($this), 'itemClassName')
+		);
 	}
 
 	function addManager( FieldSet $fields, $relationshipName, $className ) {
@@ -62,10 +65,10 @@ class LinkListDecorator extends DataObjectDecorator {
 
 	function handleItemSet( $items ) {
 		if( self::$maxNumItems ) {
-			$items = $items->getRange(0, self::$maxNumItems);
+			$items = $items->getRange(0, Object::get_static(get_class($this), 'maxNumItems'));
 		}
 		if( self::$forceItemsMultiple ) {
-			$items = $items->getRange(0, floor($items->Count() / self::$forceItemsMultiple)
+			$items = $items->getRange(0, floor($items->Count() / Object::get_static(get_class($this), 'forceItemsMultiple'))
 					* self::$forceItemsMultiple);
 		}
 		return $items;
