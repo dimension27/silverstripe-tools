@@ -17,20 +17,25 @@ class UploadFolderManager implements IUploadFolderManager {
 		self::$providers[] = $provider;
 	}
 
-	static function setUploadFolderForObject( DataObject $dataObject, FormField $field ) {
+	static function getUploadFolderForObject( DataObject $dataObject, FormField $field ) {
 		foreach( self::$providers as $provider ) {
 			if( $folder = $provider->getUploadFolderForObject($dataObject, $field) ) {
-				self::setUploadFolder($field, $folder);
 				return $folder;
 			}
 		}
 		if( $folder = self::getDefaultProvider()->getUploadFolderForObject($dataObject, $field) ) {
-			self::setUploadFolder($field, $folder);
 			return $folder;
 		}
 	}
 
-	static function setUploadFolder( FormField $field, string $folder ) {
+	static function setUploadFolderForObject( DataObject $dataObject, FormField $field ) {
+		if( $folder = self::getUploadFolderForObject($dataObject, $field) ) {
+			self::setFieldUploadFolder($field, $folder);
+			return $folder;
+		}
+	}
+
+	static function setFieldUploadFolder( FormField $field, string $folder ) {
 		if( in_array('UploadifyField', $superclasses = class_parents($field))
 				|| in_array('FileDataObjectManager', $superclasses) ) {
 			$field->setUploadFolder($folder);
