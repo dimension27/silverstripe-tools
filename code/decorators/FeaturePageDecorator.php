@@ -59,7 +59,7 @@ class FeaturePageDecorator_Item extends DataObject {
 		$fields->addFieldToTab('Root.Main', $field = new TextField('Title'));
 		$fields->addFieldToTab('Root.Main', $field = new SimpleTinyMCEField('Teaser'));
 		$fields->addFieldToTab('Root.Main', $field = new ImageUploadField('Image'));
-		UploadFolderManager::setUploadFolderForObject($this, $field);
+		UploadFolderManager::setUploadFolder($this, $field);
 		LinkFields::addLinkFields($fields, null, 'Root.Link');
 		return $fields;
 	}
