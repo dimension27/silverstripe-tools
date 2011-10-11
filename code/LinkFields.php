@@ -3,21 +3,8 @@
 class LinkFields {
 
 	/**
-	 * Requires the following fields for persistence:
-	 *   static $db => array(
-	 *     'LinkType' => 'Enum("Internal, External, File")',
-	 *     'LinkLabel' => 'Varchar(255)',
-	 * 	   'LinkTargetURL' => 'Varchar(255)'
-	 *   );
-	 *   static $has_one => array(
-	 *     'LinkTarget' => 'SiteTree',
-	 * 	   'LinkFile' => 'File'
-	 *   );
-	 * If the openInLightbox option is used then also need:
-	 *   static $db => array(
-	 *     'OpenInLightbox' => 'Boolean'
-	 *   );
-	 * You can use the LinkFields::getLink() method to render the HTML.
+	 * See LinkFieldsDecorator for the fields that are required for persistence.
+	 * You can use the LinkFields::getLinkURL() method to return the link URL.
 	 * @param Fieldset $fields
 	 * @param array $options
 	 * @param string $tabName
@@ -27,14 +14,13 @@ class LinkFields {
 			$fields->addFieldToTab($tabName, new HeaderField($options['label'], null, 3));
 		}
 		$fields->addFieldToTab($tabName, $field = new TextField('LinkLabel', 'Link label'));
-		// Install the urlfield module for URL validation git://github.com/chillu/silverstripe-urlfield.git
+		// Install the urlfield module for URL validation: git://github.com/chillu/silverstripe-urlfield.git
 		$urlClass = class_exists('URLField') ? 'URLField' : 'TextField';
 		$fields->addFieldToTab($tabName, $group = new SelectionGroup('LinkType', array(
 				'Internal//Link to a page on this website' => new TreeDropdownField('LinkTargetID', 'Link target', 'SiteTree'),
 				'External//Link to an external website' => new $urlClass('LinkTargetURL', 'Link target URL'),
 				'File//Download a file' => new TreeDropdownField('LinkFileID', 'Download file', 'File')
 		)));
-		
 		if( @$options['openInLightbox'] ) {
 			$fields->addFieldToTab($tabName, new CheckboxField('OpenInLightbox', 'Open the link in a lightbox'));
 		}
@@ -48,9 +34,6 @@ class LinkFields {
 				if( ($target = $obj->LinkTarget()) && $target->exists() ) {
 					return $target->Link();
 				}
-				else {
-					return $obj->LinkTargetURL;
-				}
 				break;
 			case 'File':
 				if( ($target = $obj->LinkFile()) && $target->exists() ) {
@@ -58,14 +41,33 @@ class LinkFields {
 				}
 				break;
 		}
-		
 	}
 
 }
 
+/**
+ * n.b. This decorator doesn't implement updateCMSFields(), you should add the fields using 
+ * LinkFields::addLinkFields();
+ * @author simonwade
+ */
 class LinkFieldsDecorator extends DataObjectDecorator {
 
-	public function Link() {
+	public function extraStatics() {
+		return array(
+			'db' => array(
+				'LinkType' => 'Enum("Internal, External, File")',
+				'LinkLabel' => 'Varchar(255)',
+				'LinkTargetURL' => 'Varchar(255)',
+				'OpenInLightbox' => 'Boolean',
+			),
+			'has_one' => array(
+				'LinkTarget' => 'SiteTree',
+				'LinkFile' => 'File',
+			),
+		);
+	}
+
+	public function LinkURL() {
 		return LinkFields::getLinkURL($this->owner);
 	}
 
