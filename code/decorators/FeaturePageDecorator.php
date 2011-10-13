@@ -12,6 +12,18 @@
  */
 class FeaturePageDecorator extends LinkListDecorator {
 
+	/**
+	 * Controls the maximum number of items that will be displayed
+	 * @var int
+	 */ 
+	public static $maxNumItems = null;
+
+	/**
+	 * Specifies that the items should alway be displayed in multiples of X
+	 * @var int
+	 */ 
+	public static $forceItemsMultiple = null;
+
 	static $relationshipName = 'FeatureItems';
 	static $itemClassName = 'FeaturePageDecorator_Item';
 

@@ -27,9 +27,9 @@ class LinkListDecorator extends DataObjectDecorator {
 	static $relationshipName = 'LinkListItems';
 	static $itemClassName = 'LinkListDecorator_Item';
 
-	function LinkListItems() {
+	function LimitedLinkListItems() {
 		$items = $this->owner->getComponents(self::$relationshipName); /* @var $items DataObjectSet */
-		return $this->handleItemSet($item);
+		return $this->handleItemSet($items);
 	}
 
 	public function extraStatics() {
@@ -42,8 +42,8 @@ class LinkListDecorator extends DataObjectDecorator {
 
 	function updateCMSFields( FieldSet $fields ) {
 		$this->addManager($fields,
-			Object::get_static(get_class($this), 'relationshipName'),
-			Object::get_static(get_class($this), 'itemClassName')
+			$this->stat('relationshipName'),
+			$this->stat('itemClassName')
 		);
 	}
 
@@ -59,17 +59,16 @@ class LinkListDecorator extends DataObjectDecorator {
 			$relationshipName, // name
 			$className // sourceClass
 		));
-		$field->setAddTitle(Object::get_static($className, 'plural_name'));
+		$field->setAddTitle($this->stat('plural_name'));
 		$field->setParentIdName('ParentID');
 	}
 
 	function handleItemSet( $items ) {
-		if( self::$maxNumItems ) {
-			$items = $items->getRange(0, Object::get_static(get_class($this), 'maxNumItems'));
+		if( $numItems = $this->stat('maxNumItems') ) {
+			$items = $items->getRange(0, $numItems);
 		}
-		if( self::$forceItemsMultiple ) {
-			$items = $items->getRange(0, floor($items->Count() / Object::get_static(get_class($this), 'forceItemsMultiple'))
-					* self::$forceItemsMultiple);
+		else if( $numItems = $this->stat('forceItemsMultiple') ) {
+			$items = $items->getRange(0, floor($items->Count() / $numItems) * $numItems);
 		}
 		return $items;
 	}
