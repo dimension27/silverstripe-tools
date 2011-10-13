@@ -89,4 +89,5 @@ class BetterImage extends Image
 			return '<img src="'.$url.'" width="'.$size[0].'" height="'.$size[1].'" alt="'.$title.'" />';
 		}
 	}
+
 }

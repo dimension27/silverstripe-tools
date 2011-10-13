@@ -64,9 +64,11 @@ class FilesystemPublisherExtension extends SiteTreeDecorator {
 			else {
 				$siblings = DataObject::get('SiteTree', 'ParentID = 0 && '.self::get_cache_filter());
 			}
-			foreach( $siblings as $sibling ) {
-				$urls[] = $sibling->AbsoluteLink();
-				$urls = array_merge($urls, (array) $sibling->subPagesToCache());
+			if( $siblings ) {
+				foreach( $siblings as $sibling ) {
+					$urls[] = $sibling->AbsoluteLink();
+					$urls = array_merge($urls, (array) $sibling->subPagesToCache());
+				}
 			}
 		}
 		//* debug */ Debug::show($urls);
