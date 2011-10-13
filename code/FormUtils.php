@@ -128,11 +128,14 @@ class FormUtils {
 	}
 
 	static function getFileCMSFields( $includeDescription = false, $titleLabel = 'Title' ) {
-		$fields = new FieldSet(new TextField('Title', $titleLabel));
+		$fields = self::createMain();
+		$fields->addFieldToTab('Root.Main', $field = new TextField('Title', $titleLabel));
 		if( $includeDescription ) {
-			$fields->push(new SimpleTinyMCEField('Description'));
+			$fields->addFieldToTab('Root.Main', $field = new SimpleTinyMCEField(
+				'Description', ($includeDescription === true ? 'Description' : $includeDescription)
+			));
 		}
-		$fields->push(new ReadonlyField('Filename'));
+		$fields->addFieldToTab('Root.Main', $field = new ReadonlyField('Filename'));
 		return $fields;
 	}
 

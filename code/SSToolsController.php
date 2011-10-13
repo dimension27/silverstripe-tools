@@ -25,14 +25,17 @@ class SSToolsController extends CliController {
 			$url = $GLOBALS['_FILE_TO_URL_MAPPING'][$baseFolder];
 		}
 		if( $url ) {
-			$outputFile = 'wget-output.log';
+			$workingFolder = $baseFolder.'/silverstripe-cache';
+			chdir($workingFolder);
+			$outputFile = preg_replace('!(http://|/)!', '', $url).'/wget-output.log';
 			$command = "wget -o $outputFile -e robots=off -r -p '$url'";
-			echo "Crawling site '$url' using '$command'\n";
+			echo "Crawling $url...\n";
 			// If you're impatient, you can run:
 			// tail -f public/sapphire/wget-output.log | egrep 'awaiting response...' | egrep -v '(200 OK|302 Found)'
 			flush();
-			`$command`;
-			`cat $outputFile | egrep 'awaiting response...' | egrep -v '(200 OK|302 Found)'`;
+			echo `$command`;
+			$output = `cat $outputFile | egrep 'awaiting response...' | egrep -v '(200 OK|302 (Found|OK))'`;
+			echo ($output ? "Some errors were found, see $outputFile for details".NL.$output.NL : 'No errors found').NL;
 		}
 	}
 
