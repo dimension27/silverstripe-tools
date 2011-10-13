@@ -5,8 +5,13 @@ class CSSInliner extends DataObjectDecorator {
 	static $css = '';
 	static $replacements = array();
 
-	static function setCSS( $css ) {
-		self::$css = $css;
+	static function addCSS( $css ) {
+		self::$css .= $css;
+	}
+
+	static function addCSSFile( $path ) {
+		$path = Director::baseFolder().'/'.$path;
+		self::$css .= file_get_contents($path);
 	}
 
 	static function addReplacement( $regExp, $replace ) {
