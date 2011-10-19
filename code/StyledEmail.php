@@ -14,15 +14,12 @@ class SSTools_StyledEmail extends Email {
 	 * @return void
 	 */
 	protected function emogrifyBody() {
-			/* debug */ Debug::message('CSS'.$this->CSS);
 		if ($this->CSS) {
-			/* debug */ Debug::message('emogrifying');
 			$emogrifier = new Emogrifier();
 			$html = $this->body;
 			$emogrifier->setHTML($html);
 			$emogrifier->setCSS($this->CSS);
 			$this->body = $emogrifier->emogrify();
-			/* debug */ Debug::message($this->body);
 		}
 	}
 }
