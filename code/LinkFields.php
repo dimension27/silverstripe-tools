@@ -17,6 +17,7 @@ class LinkFields {
 		// Install the urlfield module for URL validation: git://github.com/chillu/silverstripe-urlfield.git
 		$urlClass = class_exists('URLField') ? 'URLField' : 'TextField';
 		$fields->addFieldToTab($tabName, $group = new SelectionGroup('LinkType', array(
+				'NoLink//No link' => new LiteralField('NoLink', ''),
 				'Internal//Link to a page on this website' => new TreeDropdownField('LinkTargetID', 'Link target', 'SiteTree'),
 				'External//Link to an external website' => new $urlClass('LinkTargetURL', 'Link target URL'),
 				'File//Download a file' => new TreeDropdownField('LinkFileID', 'Download file', 'File')
@@ -28,6 +29,8 @@ class LinkFields {
 
 	static function getLinkURL( $obj ) {
 		switch( $obj->LinkType ) {
+			case 'NoLink':
+				return '';
 			case 'External':
 				return $obj->LinkTargetURL;
 			case 'Internal':
@@ -55,10 +58,13 @@ class LinkFieldsDecorator extends DataObjectDecorator {
 	public function extraStatics() {
 		return array(
 			'db' => array(
-				'LinkType' => 'Enum("Internal, External, File")',
+				'LinkType' => 'Enum("NoLink, Internal, External, File")',
 				'LinkLabel' => 'Varchar(255)',
 				'LinkTargetURL' => 'Varchar(255)',
 				'OpenInLightbox' => 'Boolean',
+			),
+			'defaults' => array(
+				'LinkType' => 'NoLink',
 			),
 			'has_one' => array(
 				'LinkTarget' => 'SiteTree',
