@@ -33,7 +33,6 @@ class BetterImage extends Image
 		if($width == $this->getWidth() && $height == $this->getHeight()){
 			return $this;
 		}
-
 		return parent::SetRatioSize($width, $height);
 	}
 
@@ -62,7 +61,7 @@ class BetterImage extends Image
 			}
 		}
 	}
-	
+
 	public function getSizedTag($width = null, $height = null) {
 		if (is_null($width) && is_null($height)){
 			$image = $this;
