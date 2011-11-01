@@ -8,22 +8,10 @@
  * // Specifies that the items should alway be displayed in multiples of 3
  * FeaturePageDecorator::$forceItemsMultiple = 3; 
  * @author simonwade
- *
  */
 class FeaturePageDecorator extends LinkListDecorator {
 
-	/**
-	 * Controls the maximum number of items that will be displayed
-	 * @var int
-	 */ 
-	public static $maxNumItems = null;
-
-	/**
-	 * Specifies that the items should alway be displayed in multiples of X
-	 * @var int
-	 */ 
-	public static $forceItemsMultiple = null;
-
+	static $tabName = 'Root.Content.FeatureItems';
 	static $relationshipName = 'FeatureItems';
 	static $itemClassName = 'FeaturePageDecorator_Item';
 
@@ -35,9 +23,9 @@ class FeaturePageDecorator extends LinkListDecorator {
 		);
 	}
 
-	function FeatureItems() {
+	function LimitFeatureItems( $maxNumItems = null, $forceMultiple = null ) {
 		$items = $this->owner->getComponents(self::$relationshipName); /* @var $items DataObjectSet */
-		return $this->handleItemSet($item);
+		return $this->handleItemSet($items,  $maxNumItems, $forceMultiple);
 	}
 
 }
@@ -64,8 +52,9 @@ class FeaturePageDecorator_Item extends DataObject {
 		'Title'
 	);
 
-	static $plural_name = 'Feature Item';
-
+	static $singular_name = 'Feature Item';
+	static $plural_name = 'Feature Items';
+	
 	public function getCMSFields() {
 		$fields = FormUtils::createMain();
 		$fields->addFieldToTab('Root.Main', $field = new TextField('Title'));
