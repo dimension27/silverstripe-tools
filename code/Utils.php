@@ -90,6 +90,21 @@ class Utils {
 		$protocol = (empty($_SERVER['HTTPS'])) ? 'https' : 'http';
 		return $protocol.'://'.$base;
 	}
-}
+	
+	/**
+	 * Converts to lowercase, removes non-word characters (alphanumerics and underscores) and converts spaces to hyphens. Also strips leading and trailing whitespace.
+	 * 
+	 * If value is "Joel is a slug", the output will be "joel-is-a-slug".
+	 * 
+	 * Taken from Django's slugify template tag.
+	 * 
+	 * @param string $value
+	 * @return string
+	 * @see https://docs.djangoproject.com/en/dev/ref/templates/builtins/#slugify
+	 * @author Alex Hayes <alex.hayes@dimension27.com>
+	 */
+	public static function slugify( $value ) {
+		return preg_replace('/[-\s]+/', '-', strtolower(trim(preg_replace('/[^\w\s-]/', '', $value))));
+	}
 
-?>
+}
