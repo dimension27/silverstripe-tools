@@ -28,16 +28,16 @@ class UploadFolderManager implements IUploadFolderManager {
 		}
 	}
 
-	static function setUploadFolder( DataObject $dataObject, FormField $field ) {
-		if( $folder = self::getUploadFolderForObject($dataObject, $field) ) {
+	static function setUploadFolder( DataObject $dataObject, FormField $field, $subDir = null ) {
+		if( $folder = self::getUploadFolderForObject($dataObject, $field, $subDir) ) {
 			self::setFieldUploadFolder($field, $folder);
 			return $folder;
 		}
 	}
 
-	static function setDOMUploadFolder( DataObjectManager $field ) {
+	static function setDOMUploadFolder( DataObjectManager $field, $subDir = null ) {
 		$dataObject = singleton($field->sourceClass());
-		if( $folder = self::getUploadFolderForObject($dataObject, $field) ) {
+		if( $folder = self::getUploadFolderForObject($dataObject, $field, $subDir) ) {
 			self::setFieldUploadFolder($field, $folder);
 			return $folder;
 		}
@@ -60,7 +60,7 @@ class UploadFolderManager implements IUploadFolderManager {
 		return self::$defaultProvider;
 	}
 
-	function getUploadFolderForObject( DataObject $dataObject, FormField $field ) {
+	function getUploadFolderForObject( DataObject $dataObject, FormField $field, $subDir = null ) {
 		$options = isset(self::$options[get_class($dataObject)])
 				? self::$options[get_class($dataObject)]
 				: self::$defaultOptions;
@@ -73,7 +73,9 @@ class UploadFolderManager implements IUploadFolderManager {
 				? '/'.$dataObject->ID : '';
 		$folder .= $options['Title']
 				? '/'.preg_replace('/[^[:alnum:]]/', '', $dataObject->getTitle()) : '';
-		
+		if( $subDir ) {
+			$folder .= '/'.$subDir;
+		}
 		return $folder;
 	}
 
