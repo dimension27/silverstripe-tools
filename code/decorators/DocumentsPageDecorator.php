@@ -77,6 +77,10 @@ class DocumentsPageDecorator_Document extends DataObject {
 		'Category' => 'DocumentsPageDecorator_Category',
 	);
 
+	static $summary_fields = array(
+		'Title'
+	);
+
 	static $singular_name = 'Document';
 
 	function getCMSFields() {
