@@ -85,8 +85,12 @@ class DocumentsPageDecorator_Document extends DataObject {
 		$fields->addFieldToTab('Root.Main', $field = new SimpleTinyMCEField('Description'));
 		$fields->addFieldToTab('Root.Main', $field = new FileUploadField('Document'));
 		UploadFolderManager::setUploadFolder($this->owner, $field);
+		// get the Page by ID so we get the right class (not forced to Page by the has_one relation)
+		if( $page = DataObject::get_by_id('Page', $this->Page()->ID) ) {
+			$categories = $page->Categories()->map();
+		}
 		$fields->addFieldToTab('Root.Main', $field = new DropdownField(
-				'CategoryID', 'Category', DataObject::get('DocumentsPageDecorator_Category')->map()
+				'CategoryID', 'Category', @$categories
 		));
 		$this->extend('updateCMSFields', $fields);
 		return $fields;
