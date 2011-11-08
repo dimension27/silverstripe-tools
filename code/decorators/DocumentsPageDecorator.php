@@ -88,6 +88,7 @@ class DocumentsPageDecorator_Document extends DataObject {
 		$fields->addFieldToTab('Root.Main', $field = new DropdownField(
 				'CategoryID', 'Category', DataObject::get('DocumentsPageDecorator_Category')->map()
 		));
+		$this->extend('updateCMSFields', $fields);
 		return $fields;
 	}
 

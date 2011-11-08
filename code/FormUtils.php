@@ -181,6 +181,12 @@ class FormUtils {
 		return LinkFields::addLinkFields($fields, $options, $tabName);
 	}
 
+	static function getDateField( $name, $title = null ) {
+		$field = new DateField($name, $title);
+		$field->setConfig('showcalendar', true);
+		return $field;
+	}
+
 }
 
 ?>
