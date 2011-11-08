@@ -19,7 +19,7 @@ class DocumentsPageDecorator extends SiteTreeDecorator {
 	function extraStatics() {
 		return array(
 			'has_many' => array(
-				'Catgegories' => 'DocumentsPageDecorator_Category',
+				'Categories' => 'DocumentsPageDecorator_Category',
 				'Documents' => 'DocumentsPageDecorator_Document',
 			)
 		);
