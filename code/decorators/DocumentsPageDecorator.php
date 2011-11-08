@@ -83,12 +83,21 @@ class DocumentsPageDecorator_Document extends DataObject {
 		$fields = FormUtils::createMain();
 		$fields->addFieldToTab('Root.Main', $field = new TextField('Title'));
 		$fields->addFieldToTab('Root.Main', $field = new SimpleTinyMCEField('Description'));
-		$fields->addFieldToTab('Root.Main', $field = new FileUploadField('File'));
+		$fields->addFieldToTab('Root.Main', $field = new FileUploadField('Document'));
 		UploadFolderManager::setUploadFolder($this->owner, $field);
 		$fields->addFieldToTab('Root.Main', $field = new DropdownField(
 				'CategoryID', 'Category', DataObject::get('DocumentsPageDecorator_Category')->map()
 		));
 		return $fields;
+	}
+	
+	function FileExtension() {
+		if( ($document = $this->Document()) && ($document->exists()) ) {
+			return substr(strrchr($document->Filename,'.'),1);
+		}
+		else {
+			return false;
+		}
 	}
 
 }
