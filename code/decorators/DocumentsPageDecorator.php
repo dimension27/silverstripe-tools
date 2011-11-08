@@ -85,8 +85,11 @@ class DocumentsPageDecorator_Document extends DataObject {
 		$fields->addFieldToTab('Root.Main', $field = new SimpleTinyMCEField('Description'));
 		$fields->addFieldToTab('Root.Main', $field = new FileUploadField('Document'));
 		UploadFolderManager::setUploadFolder($this->owner, $field);
+		if( $categories = DataObject::get('DocumentsPageDecorator_Category') ) {
+			$categories = $categories->map();
+		}
 		$fields->addFieldToTab('Root.Main', $field = new DropdownField(
-				'CategoryID', 'Category', DataObject::get('DocumentsPageDecorator_Category')->map()
+				'CategoryID', 'Category', @$categories
 		));
 		$this->extend('updateCMSFields', $fields);
 		return $fields;
