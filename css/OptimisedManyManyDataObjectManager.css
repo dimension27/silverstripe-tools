@@ -1,0 +1,47 @@
+.CustomManyMany-popup .add-dataobject {
+	display: none;
+}
+
+#DataObjectManager_Popup_SearchForm input {
+	margin-right: 1em;
+}
+
+.CustomManyMany-popup .existing-dataobject table {
+	margin: 1em 0;
+	width: 100%;
+}
+
+.CustomManyMany-popup .existing-dataobject th,
+.CustomManyMany-popup .existing-dataobject td {
+	border: 1px solid #666;
+	border-right: none;
+	padding: 0.25em;
+}
+
+.CustomManyMany-popup .existing-dataobject td {
+	border-top: none;
+	height: 2.7em;
+}
+
+.CustomManyMany-popup .existing-dataobject th.last,
+.CustomManyMany-popup .existing-dataobject td.last {
+	border-right: 1px solid #666;
+}
+
+.CustomManyMany-popup .existing-dataobject thead tr,
+.CustomManyMany-popup .existing-dataobject tbody tr.even {
+	background-color: #EEE;
+}
+
+.CustomManyMany-popup .existing-dataobject tbody .Add {
+	text-align: center;
+}
+
+.CustomManyMany-popup .existing-dataobject tbody .Add img.add {
+	cursor: pointer;
+}
+
+.CustomManyMany-popup .existing-dataobject th.Add,
+.CustomManyMany-popup .existing-dataobject td.Add {
+	width: 10%;
+}
