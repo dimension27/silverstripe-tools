@@ -13,7 +13,7 @@
 				<h2>Search for an existing member</h2>
 				<p>
 					<% control SearchableFields %>
-					<input type="text" id="$ID" placeholder="$Name" />
+					<input type="text" id="$ID" placeholder="$Name" autocomplete="off" />
 					<% end_control %>
 				</p>
 			</form>
