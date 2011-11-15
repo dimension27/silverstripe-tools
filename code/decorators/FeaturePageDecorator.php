@@ -65,6 +65,10 @@ class FeaturePageDecorator_Item extends DataObject {
 		return $fields;
 	}
 
+	public function LinkLabel() {
+		return $rv = $this->LinkLabel ? $rv : $this->Title;
+	}
+
 }
 
 UploadFolderManager::setOptions('FeaturePageDecorator_Item', array(
