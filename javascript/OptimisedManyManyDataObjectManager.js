@@ -1,5 +1,6 @@
 jQuery(function($) {
-	var $existingDiv = $('.existing-dataobject'),
+	var $addDiv = $('body > .add-dataobject'),
+		$existingDiv = $('body > .existing-dataobject'),
 		$form = $existingDiv.children('#DataObjectManager_Popup_SearchForm'),
 		$inputs = $form.find('input'),
 		$tableRows = $existingDiv.find('table tbody tr'),
@@ -53,7 +54,7 @@ jQuery(function($) {
 									var i;
 									if( data && data.xhrIndex > xhrLastUpdate ) {
 										xhrLastUpdate = data.xhrIndex;
-										var $column, $columns, index, result, resultIndex, $row, height;
+										var $column, $columns, img, index, result, resultIndex, $row, height;
 										if( !data.results.length ) {
 											clearAllRows();
 											$firstTableRow.children().eq(0).html(
@@ -64,19 +65,24 @@ jQuery(function($) {
 											for( i = 0; i < data.results.length; i++ ) {
 												result = data.results[i];
 												$row = $tableRows.eq(i);
-												height = $row.height();
+												height = Math.round($row.height() * .7, 0);
 												if( height > 30 ) height = 30;
 												if( $row.data('row-id') != result.ID ) {
 													$row.data('row-id', result.ID);
 													$columns = $row.children();
 													resultIndex = 0;
 													for( index in result ) {
-														if( index != 'ID') {
+														if( $.inArray(index, ['ID', 'RelationshipID']) == -1 ) {
 															$columns.eq(resultIndex).text(result[index]);
 															resultIndex++;
 														}
 													}
-													$columns.eq(resultIndex).html('<img src="/ss-tools/images/dataobjectmanager/add.png" class="add" height="' + height + '" width="' + height + '" />');
+													img = '<img height="' + height + '" width="' + height + '" ';
+													if( result['RelationshipID'] )
+														img += 'src="/ss-tools/images/dataobjectmanager/added.png" class="added"';
+													else
+														img += 'src="/ss-tools/images/dataobjectmanager/add.png" class="add"';
+													$columns.eq(resultIndex).html(img + ' />');
 												}
 											}
 										}
@@ -119,6 +125,12 @@ jQuery(function($) {
 				}
 			},
 			url: window.location.pathname.replace(/add$/, 'attach')
+		});
+	});
+	$('#show-add-dataobject').click(function() {
+		$existingDiv.slideUp(function() {
+			$addDiv.find('#field-holder').css({'height' : '100%'});
+			$addDiv.slideDown();
 		});
 	});
 });

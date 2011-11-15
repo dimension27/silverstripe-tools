@@ -46,9 +46,8 @@ class OptimisedManyManyDataObjectManager extends ManyManyDataObjectManager {
 		$sourceField = ($this->manyManyParentClass == $this->sourceClass ? 'Child' : $this->sourceClass);
 		$condition = " JOIN \"$this->manyManyTable\" ON (\"{$this->source}\".\"ID\" = \"{$sourceField}ID\" AND \"$this->manyManyTable\".\"{$this->manyManyParentClass}ID\" = '{$this->controller->ID}')";
 		$this->sourceJoin = str_replace('LEFT' . $condition, 'INNER' . $condition, $this->sourceJoin);
-		$this->searchCondition = "NOT EXISTS ( SELECT ID FROM $this->manyManyTable WHERE " .
-			"$this->manyManyTable.{$sourceField}ID = {$this->source}.ID AND " .
-			"$this->manyManyTable.{$this->manyManyParentClass}ID = {$this->controller->ID})";
+		$this->searchJoin = "LEFT JOIN {$this->manyManyTable} ON ({$this->manyManyTable}.{$sourceField}ID = {$this->source}.ID AND {$this->manyManyTable}.{$this->manyManyParentClass}ID = {$this->controller->ID})";
+		$this->searchCondition = "isNull({$this->manyManyTable}.ID)";
 	}
 	
 	function attach() {
@@ -77,11 +76,11 @@ class OptimisedManyManyDataObjectManager extends ManyManyDataObjectManager {
 			$dataObject = $this->getDataObject();
 			$table = $dataObject->baseTable();
 			$searchableFields = array_keys($dataObject->SearchableFields(true));
-			$select = "SELECT {$this->source}.ID, {$this->source}." . implode(", {$this->source}.", $searchableFields) . ' FROM ' . $table;
+			$select = "SELECT {$this->source}.ID, {$this->source}." . implode(", {$this->source}.", $searchableFields) . ", {$this->manyManyTable}.{$this->manyManyParentClass}ID AS RelationshipID FROM {$table} {$this->searchJoin}";
 
 			if( $fields ) {
 				$select .= ' WHERE ';
-				$where = array($this->searchCondition);
+				$where = array();
 				foreach( $fields as $key => $value )
 					$where[] = "{$table}.{$key} LIKE '{$value}%'";
 				$select .= implode(' AND ', $where);
@@ -134,7 +133,7 @@ class OptimisedManyManyDataObjectManager extends ManyManyDataObjectManager {
 	
 	function SearchableResultsTableBody() {
 		$fields = $this->SearchableFields();
-		$numRows = 11 - ceil($fields->TotalItems() / 5);
+		$numRows = 7 - ceil($fields->TotalItems() / 5);
 		$row = $rows = '';		
 		
 		foreach( $fields as $field )

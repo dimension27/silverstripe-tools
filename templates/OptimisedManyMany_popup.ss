@@ -30,6 +30,11 @@
 					$SearchableResultsTableBody
 				</tbody>
 			</table>
+			<div class="dataobjectmanager-actions ">
+				<a id="show-add-dataobject" class="popup-button">
+					<span class="uploadlink"><img src="dataobject_manager/images/add.png">Add new $name</span>
+				</a>
+			</div>
 		</div>
 		<div class="add-dataobject $PopupClasses">
 			$DetailForm
