@@ -9,16 +9,28 @@ class BetterImage extends Image
 		if($width == $this->getWidth()){
 			return $this;
 		}
-
 		return parent::SetWidth($width);
+	}
+
+	public function MaxWidth($width) {
+		if($this->getWidth() > $width) {
+			return $this->SetWidth($width);
+		}
+		return $this;
 	}
 
 	public function SetHeight($height) {
 		if($height == $this->getHeight()){
 			return $this;
 		}
-
 		return parent::SetHeight($height);
+	}
+
+	public function MaxHeight($height) {
+		if($this->getHeight() > $height) {
+			return $this->SetHeight($height);
+		}
+		return $this;
 	}
 
 	public function SetSize($width, $height) {
