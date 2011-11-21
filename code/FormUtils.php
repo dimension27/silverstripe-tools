@@ -38,23 +38,27 @@ class FormUtils {
 		return $rv;
 	}
 
-	static function flattenTabs( $fields ) {
+	static function flattenTabs( $fields, $include = null ) {
 		$flattened = new FieldSet();
 		foreach( $fields as $field ) {
 			if( $field instanceof TabSet ) {
 				$tabSet = $field;
-				foreach( self::flattenTabs($tabSet->Tabs()) as $field ) {
+				foreach( self::flattenTabs($tabSet->Tabs(), $include) as $field ) {
 					$flattened->push($field);
 				}
 			}
 			else if( $field instanceof Tab ) {
 				$tab = $field;
 				foreach( $tab->Fields() as $field ) {
-					$flattened->push($field);
+					if( !$include || in_array($field->Name(), $include) ) {
+						$flattened->push($field);
+					}
 				}
 			}
 			else {
-				$flattened->push($field);
+				if( !$include || in_array($field->Name(), $include) ) {
+					$flattened->push($field);
+				}
 			}
 		}
 		return $flattened;
