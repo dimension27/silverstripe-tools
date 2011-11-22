@@ -32,6 +32,17 @@ class BetterImage extends Image
 		}
 		return $this;
 	}
+	
+	public function setMaxSize($width, $height) {
+		$fullHeight = $this->getHeight();
+		$fullWidth = $this->getWidth();
+
+		if( $height > $fullHeight && $width > $fullWidth )
+			return $this;
+		
+		$newHeight = ($width / $fullWidth) * $fullWidth;
+		return $newHeight < $height ? $this->SetWidth($width) : $this->SetHeight($height);
+	}
 
 	public function SetSize($width, $height) {
 		if($width == $this->getWidth() && $height == $this->getHeight()){
