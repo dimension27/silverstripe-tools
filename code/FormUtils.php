@@ -147,9 +147,9 @@ class FormUtils {
 		return new LiteralField($name, '<div class="field"><label>'.$label.'</label></div>');
 	}
 
-	static function getSelectMap( DataObjectSet $set ) {
+	static function getSelectMap( DataObjectSet $set, $emptyString = null ) {
 		if( $set && $set->count() ) {
-			$rv = $set->map();
+			$rv = $set->map('ID', 'Title', $emptyString);
 		}
 		else {
 			$rv = array('' => '-- Empty --');
