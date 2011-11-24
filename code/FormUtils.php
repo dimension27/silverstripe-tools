@@ -38,23 +38,27 @@ class FormUtils {
 		return $rv;
 	}
 
-	static function flattenTabs( $fields ) {
+	static function flattenTabs( $fields, $include = null ) {
 		$flattened = new FieldSet();
 		foreach( $fields as $field ) {
 			if( $field instanceof TabSet ) {
 				$tabSet = $field;
-				foreach( self::flattenTabs($tabSet->Tabs()) as $field ) {
+				foreach( self::flattenTabs($tabSet->Tabs(), $include) as $field ) {
 					$flattened->push($field);
 				}
 			}
 			else if( $field instanceof Tab ) {
 				$tab = $field;
 				foreach( $tab->Fields() as $field ) {
-					$flattened->push($field);
+					if( !$include || in_array($field->Name(), $include) ) {
+						$flattened->push($field);
+					}
 				}
 			}
 			else {
-				$flattened->push($field);
+				if( !$include || in_array($field->Name(), $include) ) {
+					$flattened->push($field);
+				}
 			}
 		}
 		return $flattened;
@@ -149,9 +153,9 @@ class FormUtils {
 		return new LiteralField($name, '<div class="field"><label>'.$label.'</label></div>');
 	}
 
-	static function getSelectMap( DataObjectSet $set ) {
+	static function getSelectMap( DataObjectSet $set, $emptyString = null ) {
 		if( $set && $set->count() ) {
-			$rv = $set->map();
+			$rv = $set->map('ID', 'Title', $emptyString);
 		}
 		else {
 			$rv = array('' => '-- Empty --');
