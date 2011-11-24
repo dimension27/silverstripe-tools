@@ -139,6 +139,12 @@ class FormUtils {
 		return $fields;
 	}
 
+	static function getFileDataObjectCMSFields( $includeDescription = false, $titleLabel = 'Title' ) {
+		$fields = self::getFileCMSFields($includeDescription, $titleLabel);
+		$fields->removeByName('Filename');
+		return $fields;
+	}
+
 	static function getLabel( $label, $name = null ) {
 		return new LiteralField($name, '<div class="field"><label>'.$label.'</label></div>');
 	}
