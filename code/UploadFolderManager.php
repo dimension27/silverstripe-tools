@@ -61,12 +61,16 @@ class UploadFolderManager implements IUploadFolderManager {
 	}
 
 	function getUploadFolderForObject( DataObject $dataObject, FormField $field, $subDir = null ) {
+		$folder = '';
 		$options = isset(self::$options[get_class($dataObject)])
 				? self::$options[get_class($dataObject)]
 				: self::$defaultOptions;
-		$folder = $options['folder']
-				? $options['folder']
-				: 'Uploads/'.preg_replace('/[^[:alnum:]]/', '', $dataObject->plural_name());
+		if( class_exists('Subsite') && $options['subsite'] ) {
+			$folder .= Utils::slugify(Subsite::currentSubsite()->Title, false);
+		}
+		$folder .= $options['folder']
+				? '/'.$options['folder']
+				: '/Uploads/'.preg_replace('/[^[:alnum:]]/', '', $dataObject->plural_name());
 		$folder .= $options['date']
 				? '/'.date($options['date']) : '';
 		$folder .= $options['ID']
@@ -85,6 +89,7 @@ class UploadFolderManager implements IUploadFolderManager {
 		'date' => 'Y',
 		'ID' => null,
 		'Title' => null,
+		'subsite' => true,
 	);
 
 	static function setOptions( $className, $options ) {
