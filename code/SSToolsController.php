@@ -39,7 +39,9 @@ class SSToolsController extends CliController {
 			/* debug */ echo $command.NL;
 			echo `$command`;
 			$output = `cat $outputFile | egrep 'awaiting response...' | egrep -v '(200 OK|302 (Found|OK))'`;
-			echo ($output ? "Some errors were found, see $outputFile for details".NL.$output : 'No errors found').NL;
+			echo ($output
+					? "Some errors were found, see $workingFolder/$outputFile for details".NL.$output
+					: 'No errors found').NL;
 		}
 	}
 
