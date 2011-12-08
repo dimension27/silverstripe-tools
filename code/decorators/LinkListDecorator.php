@@ -24,7 +24,7 @@ class LinkListDecorator extends DataObjectDecorator {
 	 */ 
 	public static $forceMultiple = null;
 
-	static $tabName = 'Root.Content.LinkedItems';
+	static $tabName = 'Root.Content.LinkListItems';
 	static $relationshipName = 'LinkListItems';
 	static $itemClassName = 'LinkListDecorator_Item';
 

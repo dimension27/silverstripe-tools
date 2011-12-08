@@ -38,23 +38,27 @@ class FormUtils {
 		return $rv;
 	}
 
-	static function flattenTabs( $fields ) {
+	static function flattenTabs( $fields, $include = null ) {
 		$flattened = new FieldSet();
 		foreach( $fields as $field ) {
 			if( $field instanceof TabSet ) {
 				$tabSet = $field;
-				foreach( self::flattenTabs($tabSet->Tabs()) as $field ) {
+				foreach( self::flattenTabs($tabSet->Tabs(), $include) as $field ) {
 					$flattened->push($field);
 				}
 			}
 			else if( $field instanceof Tab ) {
 				$tab = $field;
 				foreach( $tab->Fields() as $field ) {
-					$flattened->push($field);
+					if( !$include || in_array($field->Name(), $include) ) {
+						$flattened->push($field);
+					}
 				}
 			}
 			else {
-				$flattened->push($field);
+				if( !$include || in_array($field->Name(), $include) ) {
+					$flattened->push($field);
+				}
 			}
 		}
 		return $flattened;
@@ -127,15 +131,21 @@ class FormUtils {
 		);
 	}
 
-	static function getFileCMSFields( $includeDescription = false, $titleLabel = 'Title' ) {
+	static function getFileCMSFields( $includeContent = false, $titleLabel = 'Title' ) {
 		$fields = self::createMain();
 		$fields->addFieldToTab('Root.Main', $field = new TextField('Title', $titleLabel));
-		if( $includeDescription ) {
+		if( $includeContent ) {
 			$fields->addFieldToTab('Root.Main', $field = new SimpleTinyMCEField(
-				'Description', ($includeDescription === true ? 'Description' : $includeDescription)
+				'Content', ($includeContent === true ? 'Content' : $includeContent)
 			));
 		}
 		$fields->addFieldToTab('Root.Main', $field = new ReadonlyField('Filename'));
+		return $fields;
+	}
+
+	static function getFileDataObjectCMSFields( $includeDescription = false, $titleLabel = 'Title' ) {
+		$fields = self::getFileCMSFields($includeDescription, $titleLabel);
+		$fields->removeByName('Filename');
 		return $fields;
 	}
 
@@ -143,9 +153,9 @@ class FormUtils {
 		return new LiteralField($name, '<div class="field"><label>'.$label.'</label></div>');
 	}
 
-	static function getSelectMap( DataObjectSet $set ) {
+	static function getSelectMap( DataObjectSet $set, $emptyString = null ) {
 		if( $set && $set->count() ) {
-			$rv = $set->map();
+			$rv = $set->map('ID', 'Title', $emptyString);
 		}
 		else {
 			$rv = array('' => '-- Empty --');
@@ -179,6 +189,12 @@ class FormUtils {
 	 */
 	static function addLinkFields( $fields, $options = null, $tabName = 'Root.Main' ) {
 		return LinkFields::addLinkFields($fields, $options, $tabName);
+	}
+
+	static function getDateField( $name, $title = null ) {
+		$field = new DateField($name, $title);
+		$field->setConfig('showcalendar', true);
+		return $field;
 	}
 
 }
