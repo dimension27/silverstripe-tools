@@ -10,7 +10,7 @@ class PaginationHelper {
 	protected $offset;
 
 	function __construct( DataObjectSet $set, $limitPerPage = null ) {
-		$this->set = $set;
+		$this->set = $set ? $set : new DataObjectSet();
 		if( $limitPerPage ) {
 			$this->limitPerPage = $limitPerPage;
 		}
