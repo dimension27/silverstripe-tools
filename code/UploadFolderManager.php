@@ -65,8 +65,8 @@ class UploadFolderManager implements IUploadFolderManager {
 		$options = isset(self::$options[get_class($dataObject)])
 				? self::$options[get_class($dataObject)]
 				: self::$defaultOptions;
-		if( class_exists('Subsite') && $options['subsite'] ) {
-			$folder .= Utils::slugify(Subsite::currentSubsite()->Title, false);
+		if( class_exists('Subsite') && $options['subsite'] && $site = Subsite::currentSubsite() ) {
+			$folder .= Utils::slugify($site->Title, false);
 		}
 		$folder .= $options['folder']
 				? '/'.$options['folder']
