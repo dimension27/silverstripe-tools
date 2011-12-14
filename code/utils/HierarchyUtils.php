@@ -1,10 +1,10 @@
 <?php
 
-class FamilyGathering {
+class HierarchyUtils {
 
 	static function getDescendants( $dataObject, $className, $sort ) {
 		$parentIDs = $dataObject->getDescendantIDList();
-		$parentIDs[] = $this->data()->ID;
+		$parentIDs[] = $dataObject->ID;
 		return DataObject::get($className, "ParentID IN ('".implode($parentIDs, "', '"). "')", $sort);
 	}
 
