@@ -1,4 +1,4 @@
-$.ssTools = {
+jQuery.ssTools = {
 	/**
 	 * Workaround for the fact that SS replaces all hash links to work around its base tag.
 	 * @param selector Optional selector for selecting links. Defaults to "a.hash-only, .hash-only a"
