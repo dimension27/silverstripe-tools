@@ -36,7 +36,7 @@
 				</a>
 			</div>
 		</div>
-		<div class="add-dataobject $PopupClasses">
+		<div class="add-dataobject $PopupClasses" style="clear: both;">
 			$DetailForm
 		</div>
 	</body>
