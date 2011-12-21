@@ -35,8 +35,10 @@ class UploadFolderManager implements IUploadFolderManager {
 		}
 	}
 
-	static function setDOMUploadFolder( DataObjectManager $field, $subDir = null ) {
-		$dataObject = singleton($field->sourceClass());
+	static function setDOMUploadFolder( DataObjectManager $field, $subDir = null, $dataObject = null ) {
+		if( !$dataObject ) {
+			$dataObject = singleton($field->sourceClass());
+		}
 		if( $folder = self::getUploadFolderForObject($dataObject, $field, $subDir) ) {
 			self::setFieldUploadFolder($field, $folder);
 			return $folder;
