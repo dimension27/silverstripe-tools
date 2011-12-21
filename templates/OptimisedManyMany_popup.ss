@@ -36,7 +36,8 @@
 				</a>
 			</div>
 		</div>
-		<div class="add-dataobject $PopupClasses">
+		<div class="add-dataobject $PopupClasses" style="clear: both;">
+			<a href="#" id="show-existing">Back to search</a>
 			$DetailForm
 		</div>
 	</body>
