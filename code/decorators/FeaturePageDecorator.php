@@ -54,7 +54,8 @@ class FeaturePageDecorator_Item extends DataObject {
 
 	static $singular_name = 'Feature Item';
 	static $plural_name = 'Feature Items';
-	
+	static $disabled_fields = array();
+
 	public function getCMSFields() {
 		$fields = FormUtils::createMain();
 		$fields->addFieldToTab('Root.Main', $field = new TextField('Title'));
@@ -62,11 +63,29 @@ class FeaturePageDecorator_Item extends DataObject {
 		$fields->addFieldToTab('Root.Main', $field = new ImageUploadField('Image'));
 		UploadFolderManager::setUploadFolder($this, $field);
 		LinkFields::addLinkFields($fields, null, 'Root.Link');
+		foreach( self::$disabled_fields as $name => $disabled ) {
+			if( $disabled ) {
+				$fields->removeByName($name);
+			}
+		}
 		return $fields;
 	}
 
+	public static function disable_field( $field, $bool = true ) {
+		self::$disabled_fields[$field] = $bool;
+	} 
+
 	public function LinkLabel() {
 		return $rv = $this->LinkLabel ? $rv : $this->Title;
+	}
+
+	public function onAfterWrite() {
+		parent::onAfterWrite();
+		$file = $this->Image();
+		if( $file && $file->exists() ) {
+			$file->Title = $this->Title;
+			$file->write();
+		}
 	}
 
 }
