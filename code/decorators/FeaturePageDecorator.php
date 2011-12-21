@@ -1,12 +1,24 @@
 <?php
-
 /**
  * Example usage:
+ * 
  * Object::add_extension('HomePage', 'FeaturePageDecorator');
  * // Controls the maximum number of items that will be displayed
  * FeaturePageDecorator::$maxNumItems = 9;
  * // Specifies that the items should alway be displayed in multiples of 3
  * FeaturePageDecorator::$forceItemsMultiple = 3; 
+ * 
+ * Template example:
+ *
+ *	<ul id="featured-items">
+ *	<% control LimitFeatureItems(3) %>
+ *	    <li>
+ *	    	<% if LinkURL %><a href="$LinkURL" title="$LinkLabel">$Image.SetCroppedSize(237, 168)</a>
+ *	    	<% else %>$Image.SetCroppedSize(237, 168)<% end_if %>
+ *	</li>
+ *	<% end_control %>
+ *	</ul>
+ *
  * @author simonwade
  */
 class FeaturePageDecorator extends LinkListDecorator {
