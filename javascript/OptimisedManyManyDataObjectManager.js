@@ -129,10 +129,20 @@ jQuery(function($) {
 		});
 	});
 	if( $messages.length ) {
-		$existingDiv.slideUp(function() {
-			$addDiv.find('#field-holder').css({'height' : '100%'});
-			$addDiv.slideDown();
+		var hasErrors = false;
+		$messages.each(function() {
+			var $this = $(this);
+			if( $this.html().length > 0 ) {
+				hasErrors = true;
+				return false;
+			}
 		});
+		if( hasErrors ) {
+			$existingDiv.slideUp(function() {
+				$addDiv.find('#field-holder').css({'height' : '100%'});
+				$addDiv.slideDown();
+			});
+		}
 	}
 	$('#show-add-dataobject').click(function() {
 		$existingDiv.slideUp(function() {
