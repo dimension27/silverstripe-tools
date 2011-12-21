@@ -5,6 +5,7 @@ jQuery(function($) {
 		$inputs = $form.find('input'),
 		$tableRows = $existingDiv.find('table tbody tr'),
 		$firstTableRow = $tableRows.eq(0),
+		$messages = $('.message', $addDiv),
 		searchingText = 'Searching&hellip;',
 		tableRowsLength = $tableRows.length,
 		xhrIndex = 0,
@@ -127,10 +128,22 @@ jQuery(function($) {
 			url: window.location.pathname.replace(/add$/, 'attach')
 		});
 	});
+	if( $messages.length ) {
+		$existingDiv.slideUp(function() {
+			$addDiv.find('#field-holder').css({'height' : '100%'});
+			$addDiv.slideDown();
+		});
+	}
 	$('#show-add-dataobject').click(function() {
 		$existingDiv.slideUp(function() {
 			$addDiv.find('#field-holder').css({'height' : '100%'});
 			$addDiv.slideDown();
 		});
+	});
+	$('#show-existing').click(function() {
+		$addDiv.slideUp(function() {
+			$existingDiv.slideDown();
+		});
+		return false;
 	});
 });
