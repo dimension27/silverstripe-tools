@@ -2,8 +2,8 @@
 /**
  * Adds a facebook like button to a template. Requires that the page has been initialised using 
  * SSTools_Social_FacebookInit, if using the JS SDK.
+ * See http://developers.facebook.com/docs/reference/plugins/like/ for API details.
  * @author sergeim
- *
  */
 class SSTools_Social_FacebookLikeButton extends Object implements SSTools_Core_RenderableInterface {
 	
