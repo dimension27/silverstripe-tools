@@ -106,6 +106,15 @@ class BetterImage extends Image
 	public function SetCroppedSize($width, $height) {
 		return $this->getFormattedImage('CroppedImage', $width, $height);
 	}
+
+	/**
+	 * Straight resize, potentially stretching an image into shape
+	 * @return obj Image_Cached
+	 * @author Adam Rice <development@hashnotadam.com>
+	 */
+	public function setResizedSize($width, $height) {
+		return $this->getFormattedImage('ResizedImage', $width, $height);
+	}
 	
 	public function getFormattedImage($format, $arg1 = null, $arg2 = null) {
 		if($this->ID && $this->Filename && Director::fileExists($this->Filename)) {
@@ -117,11 +126,7 @@ class BetterImage extends Image
 					break;
 			}
 
-			if($preserveOriginal){
-				return $this;
-			} else {
-				return parent::getFormattedImage($format, $arg1, $arg2);
-			}
+			return $preserveOriginal ? $this : parent::getFormattedImage($format, $arg1, $arg2);
 		}
 	}
 
