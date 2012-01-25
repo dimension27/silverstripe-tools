@@ -4,7 +4,9 @@
  * fits the requested dimensions
  */
 class BetterImage extends Image
-{   
+{
+	// Quality to be used if a resize needs to be done with less compression
+	static protected $GDHigherQuality = 90;
 	
 	/**
 	 * Image version of getTag does not add width and height
@@ -45,12 +47,35 @@ class BetterImage extends Image
 			}
 		}
 	}
+
+	protected function increaseGDQuality() {
+		$GDQuality = GD::get_default_quality();
+		if( $GDQuality < self::$GDHigherQuality ) {
+			$this->previousGDQuality = $GDQuality;
+			GD::set_default_quality(self::$GDHigherQuality);
+		}
+		
+	}
+
+	protected function resetGDQuality() {
+		if( isset($this->previousGDQuality) ) {
+			GD::set_default_quality($this->previousGDQuality);
+			unset($this->previousGDQuality);
+		}
+	}
 	
 	public function SetWidth($width) {
-		if($width == $this->getWidth()){
+		$currentWidth = $this->getWidth();
+		if( $width == $currentWidth ) {
 			return $this;
 		}
-		return parent::SetWidth($width);
+
+		// GD seems to perform poorly at smaller sizes so bump up the quality
+		if( $width <= 200 ) $this->increaseGDQuality();
+		$rv = parent::SetWidth($width);
+		if( $width <= 200 ) $this->resetGDQuality();
+
+		return $rv;
 	}
 
 	public function MaxWidth($width) {
