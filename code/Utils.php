@@ -9,11 +9,17 @@ class Utils {
 	}
 
 	public static function BasePath() {
-		return BASE_PATH;
+		$rv = BASE_PATH;
+		if( !$rv ) {
+			$file = __FILE__;
+			while( substr($file, strrpos($file, '/') + 1) != 'public' )
+				$file = dirname($file);
+		}
+		return $rv;
 	}
 
 	public static function ProjectDir() {
-		return BASE_PATH.'/'.project();
+		return self::BasePath().'/'.project();
 	}
 	
 	public static function GetURIFromID( $id ) {

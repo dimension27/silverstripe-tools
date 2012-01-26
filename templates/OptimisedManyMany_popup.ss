@@ -8,6 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 	</head>
 	<body class="CustomManyMany-popup DataObjectManager-popup loading <% if String %><% if NestedController %>nestedController<% end_if %><% else %><% if DetailForm.NestedController %>nestedController<% end_if %><% end_if %>	">
+        <% if IncludeSearch %>
 		<div class="existing-dataobject">
 			<form method="post" id="DataObjectManager_Popup_SearchForm">
 				<h2>Search for an existing member</h2>
@@ -36,7 +37,11 @@
 				</a>
 			</div>
 		</div>
+        <% end_if %>
 		<div class="add-dataobject $PopupClasses" style="clear: both;">
+        <% if IncludeSearch %>
+			<a href="#" id="show-existing">Back to search</a>
+        <% end_if %>
 			$DetailForm
 		</div>
 	</body>

@@ -153,4 +153,11 @@ class OptimisedManyManyDataObjectManager extends ManyManyDataObjectManager {
 		}
 		return 'ID';
 	}
+	
+	/**
+	 * Whether or not to include search in the popup. This should not be done if we are editing an existing record.
+	 */
+	function IncludeSearch() {
+		return !$this->getDataObject()->exists();
+	}
 }
