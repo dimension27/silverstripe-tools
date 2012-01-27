@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Adds the ability to require an SSL connection for a page. Requires a call to 
+ * RequireSSLDecorator::controller_init($this->data()) to be added to the Page_Controller.
+ * @author simonwade
+ */
 class RequireSSLDecorator extends DataObjectDecorator {
 
 	function extraStatics() {
@@ -9,7 +13,6 @@ class RequireSSLDecorator extends DataObjectDecorator {
 	}
 
 	function updateCMSFields($fields) {
-		/* debug */ Debug::show('foo');
 		$fields->addFieldToTab('Root.Behaviour', $field = new CheckboxField('RequireSSL', 'Require a secure SSL connection for this page?'), 'ProvideComments');
 	}
 
