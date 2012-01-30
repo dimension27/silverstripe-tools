@@ -1,8 +1,8 @@
 <?php
 /**
  * Adds a tweet button to a template. 
+ * See https://dev.twitter.com/docs/tweet-button for details of this API.
  * @author sergeim
- *
  */
 class SSTools_Social_TweetButton extends Object implements SSTools_Core_RenderableInterface {
 	
@@ -11,21 +11,22 @@ class SSTools_Social_TweetButton extends Object implements SSTools_Core_Renderab
 	 * @var string
 	 */
 	public $URL = null;
-	
+
 	/**
 	 * The account to tweet. 
 	 * @var string
 	 */
 	public $Account = null;
-	
+
 	/**
-	 * The layout of the count
+	 * Controls the layout of the count. Options are: none, horizontal, vertical
 	 * @var string
 	 */
+	public $CountLayout = self::VERTICAL;
+
 	const VERTICAL = 'vertical';
 	const HORIZONTAL = 'horizontal';
 	const NONE = 'none';
-	public $CountLayout = self::VERTICAL;
 	
 	/**
 	 * The text that people will include in their Tweet when they share from your website.
@@ -65,4 +66,5 @@ class SSTools_Social_TweetButton extends Object implements SSTools_Core_Renderab
 <a href="http://twitter.com/share" class="twitter-share-button"{$dataAttributes}>Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
 EOS;
 	}
+
 }

@@ -84,7 +84,7 @@ class Emogrifier {
 		$xmldoc->encoding = $encoding;
 		$xmldoc->strictErrorChecking = false;
 		$xmldoc->formatOutput = true;
-        $xmldoc->loadHTML($body);
+        @$xmldoc->loadHTML($body);
 		$xmldoc->normalizeDocument();
 
 		$xpath = new DOMXPath($xmldoc);

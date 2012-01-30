@@ -82,7 +82,7 @@ class FilesystemPublisherExtension extends SiteTreeDecorator {
 		$urls = array();
 		// only cache the RSS feed if anyone can view this page
 		if( $this->owner->ProvideComments && $this->owner->canView() ) {
-			$urls[] = Director::absoluteBaseURL().'pagecomment/rss/'.$this->ID;
+			$urls[] = Director::absoluteBaseURL().'pagecomment/rss/'.$this->owner->ID;
 		}
 		return $urls;
 	}

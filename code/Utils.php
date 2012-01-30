@@ -9,11 +9,17 @@ class Utils {
 	}
 
 	public static function BasePath() {
-		return BASE_PATH;
+		$rv = BASE_PATH;
+		if( !$rv ) {
+			$file = __FILE__;
+			while( substr($file, strrpos($file, '/') + 1) != 'public' )
+				$file = dirname($file);
+		}
+		return $rv;
 	}
 
 	public static function ProjectDir() {
-		return BASE_PATH.'/'.project();
+		return self::BasePath().'/'.project();
 	}
 	
 	public static function GetURIFromID( $id ) {
@@ -103,8 +109,11 @@ class Utils {
 	 * @see https://docs.djangoproject.com/en/dev/ref/templates/builtins/#slugify
 	 * @author Alex Hayes <alex.hayes@dimension27.com>
 	 */
-	public static function slugify( $value ) {
-		return preg_replace('/[-\s]+/', '-', strtolower(trim(preg_replace('/[^\w\s-]/', '', $value))));
+	public static function slugify( $value, $lowerCase = true ) {
+		if( $lowerCase ) {
+			$value = strtolower($value);
+		}
+		return preg_replace('/[-\s]+/', '-', trim(preg_replace('/[^\w\s-]/', '', $value)));
 	}
 
 }

@@ -59,7 +59,6 @@ class SSTools_Social_FacebookInit extends Object implements SSTools_Core_Rendera
 		$appId = $this->get_app_id();
 		if ($host = isset($_SERVER['HTTP_HOST'])?$_SERVER['HTTP_HOST']:null) {
 			$channelUrlDefinition = "channelUrl : 'http://$host/channel.html', // channel.html file";
-			
 		}
 		return 
 		<<<EOS
