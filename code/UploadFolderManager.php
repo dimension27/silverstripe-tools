@@ -20,12 +20,13 @@ class UploadFolderManager implements IUploadFolderManager {
 	static function getUploadFolder( DataObject $dataObject, FormField $field, $subDir = null ) {
 		foreach( self::$providers as $provider ) {
 			if( $folder = $provider->getUploadFolderForObject($dataObject, $field, $subDir) ) {
-				return $folder;
+				break;
 			}
 		}
-		if( $folder = self::getDefaultProvider()->getUploadFolderForObject($dataObject, $field, $subDir) ) {
-			return $folder;
+		if( !$folder ) {
+			$folder = self::getDefaultProvider()->getUploadFolderForObject($dataObject, $field, $subDir);
 		}
+		return $folder;
 	}
 
 	static function setUploadFolder( DataObject $dataObject, FormField $field, $subDir = null ) {
@@ -35,9 +36,11 @@ class UploadFolderManager implements IUploadFolderManager {
 		}
 	}
 
-	static function setDOMUploadFolder( DataObjectManager $field, $subDir = null ) {
-		$dataObject = singleton($field->sourceClass());
-		if( $folder = self::getUploadFolderForObject($dataObject, $field, $subDir) ) {
+	static function setDOMUploadFolder( DataObjectManager $field, $subDir = null, $dataObject = null ) {
+		if( !$dataObject ) {
+			$dataObject = singleton($field->sourceClass());
+		}
+		if( $folder = self::getUploadFolder($dataObject, $field, $subDir) ) {
 			self::setFieldUploadFolder($field, $folder);
 			return $folder;
 		}
@@ -61,12 +64,18 @@ class UploadFolderManager implements IUploadFolderManager {
 	}
 
 	function getUploadFolderForObject( DataObject $dataObject, FormField $field, $subDir = null ) {
+		$folder = '';
 		$options = isset(self::$options[get_class($dataObject)])
 				? self::$options[get_class($dataObject)]
 				: self::$defaultOptions;
-		$folder = $options['folder']
-				? $options['folder']
-				: 'Uploads/'.preg_replace('/[^[:alnum:]]/', '', $dataObject->plural_name());
+		if( class_exists('Subsite') 
+				&& $options['subsite'] 
+				&& $site = Subsite::currentSubsite() ) {
+			$folder .= Utils::slugify($site->Title, false);
+		}
+		$folder .= $options['folder']
+				? '/'.$options['folder']
+				: '/Uploads/'.preg_replace('/[^[:alnum:]]/', '', $dataObject->plural_name());
 		$folder .= $options['date']
 				? '/'.date($options['date']) : '';
 		$folder .= $options['ID']
@@ -85,10 +94,24 @@ class UploadFolderManager implements IUploadFolderManager {
 		'date' => 'Y',
 		'ID' => null,
 		'Title' => null,
+		'subsite' => true,
 	);
 
 	static function setOptions( $className, $options ) {
 		self::$options[$className] = array_merge(self::$defaultOptions, $options);
+	}
+
+	static function printUploadFolders() {
+		foreach( ClassInfo::allClasses() as $className ) {
+			if( !in_array($className, array('SS_Benchmark_Timer'))
+					&& class_exists($className)
+					&& is_subclass_of($className, 'DataObject') ) {
+				new $className;
+			}
+		}
+		foreach( self::$options as $className => $options ) {
+			echo "$className: ".self::getUploadFolder(new $className, new FileUploadField($className)).NL;
+		}
 	}
 
 }
@@ -97,4 +120,10 @@ interface IUploadFolderManager {
 	function getUploadFolderForObject( DataObject $dataObject, FormField $field, $subDir = null );
 }
 
-?>
+class UploadFolderManagerController extends CliController {
+
+	function print_upload_folders() {
+		UploadFolderManager::printUploadFolders();
+	}
+
+}

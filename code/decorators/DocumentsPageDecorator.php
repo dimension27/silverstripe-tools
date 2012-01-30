@@ -1,5 +1,6 @@
 <?php
 /**
+ * Use DocumentsPageDecorator::add_extension() in order to be able to use UploadFolderManager::printUploadFolders().
  * Example implementation:
 
 DocumentsPageDecorator::init();
@@ -11,6 +12,13 @@ class DocumentsPage_Controller extends Page_Controller {}
  */
 
 class DocumentsPageDecorator extends SiteTreeDecorator {
+
+	public static function add_extension( $className ) {
+		Object::add_extension($className, 'BannerDecorator');
+		if( Director::isDev() && class_exists('UploadFolderManager') ) {
+			UploadFolderManager::setOptions($className, array());
+		}
+	}
 
 	static function init() {
 		SortableDataObject::add_sortable_classes(array('DocumentsPageDecorator_Category', 'DocumentsPageDecorator_Document'));
