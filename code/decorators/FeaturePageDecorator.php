@@ -97,7 +97,7 @@ class FeaturePageDecorator_Item extends DataObject {
 	} 
 
 	public function LinkLabel() {
-		return $rv = $this->LinkLabel ? $rv : $this->Title;
+		return ($rv = $this->LinkLabel) ? $rv : $this->Title;
 	}
 
 	public function onAfterWrite() {
