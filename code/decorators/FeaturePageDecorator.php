@@ -36,8 +36,17 @@ class FeaturePageDecorator extends LinkListDecorator {
 	}
 
 	function LimitFeatureItems( $maxNumItems = null, $forceMultiple = null ) {
-		$items = $this->owner->getComponents(self::$relationshipName); /* @var $items DataObjectSet */
+		$items = $this->owner->getComponents($this->stat('relationshipName')); /* @var $items DataObjectSet */
 		return $this->handleItemSet($items,  $maxNumItems, $forceMultiple);
+	}
+
+	public function removeFeaturePageFields( FieldSet $fields ) {
+		$fields->removeByName($this->stat('relationshipName'));
+		if( ($tab = $fields->fieldByName($this->stat('tabName'))) && $tab instanceof Tab ) { /* @var $tab Tab */
+			if( $tab && ($tab->Fields()->Count() == 0) ) {
+				$fields->removeByName(preg_replace('/.+\./', '', $tabName));
+			}
+		}
 	}
 
 }
@@ -88,7 +97,7 @@ class FeaturePageDecorator_Item extends DataObject {
 	} 
 
 	public function LinkLabel() {
-		return $rv = $this->LinkLabel ? $rv : $this->Title;
+		return ($rv = $this->LinkLabel) ? $rv : $this->Title;
 	}
 
 	public function onAfterWrite() {

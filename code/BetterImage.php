@@ -138,7 +138,9 @@ class BetterImage extends Image
 	 * @author Adam Rice <development@hashnotadam.com>
 	 */
 	public function setResizedSize($width, $height) {
-		return $this->getFormattedImage('ResizedImage', $width, $height);
+		return $width == $this->getWidth() && $height == $this->getHeight() ?
+					$this :
+					$this->getFormattedImage('ResizedImage', $width, $height);
 	}
 	
 	public function getFormattedImage($format, $arg1 = null, $arg2 = null) {
