@@ -130,7 +130,7 @@ EOS;
 		}
 		$queryString = implode('&', $parts);
 		return <<<EOS
-<iframe src="http://www.facebook.com/plugins/like.php?$queryString"
+<iframe class="facebook-share-button $this->Verb" src="http://www.facebook.com/plugins/like.php?$queryString"
  scrolling="no" frameborder="0"
  style="border:none; width:{$this->Width}px; height:{$this->Height}px"></iframe>
 EOS;
