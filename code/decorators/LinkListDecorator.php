@@ -101,7 +101,8 @@ class LinkListDecorator_Item extends DataObject {
 
 	static $singular_name = 'Link';
 	static $plural_name = 'Links';
-	
+	static $extensions = array('LinkFieldsDecorator');
+
 	public function getCMSFields() {
 		$fields = FormUtils::createMain();
 		LinkFields::addLinkFields($fields);
