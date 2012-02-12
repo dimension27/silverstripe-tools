@@ -84,7 +84,7 @@ class Emogrifier {
 		$xmldoc->encoding = $encoding;
 		$xmldoc->strictErrorChecking = false;
 		$xmldoc->formatOutput = true;
-        $xmldoc->loadHTML($body);
+        @$xmldoc->loadHTML($body);
 		$xmldoc->normalizeDocument();
 
 		$xpath = new DOMXPath($xmldoc);
@@ -251,7 +251,14 @@ class Emogrifier {
             if (empty($def) || strpos($def, ':') === false) continue;
     	    list($key,$value) = explode(':',$def,2);
     	    if (empty($key) || strlen(trim($value)) === 0) continue;
-    	    $retArr[trim($key)] = trim($value);
+    	    $key = trim($key);
+    	    $value = trim($value);
+    	    if (($index = strpos($value, 'url(')) !== false) {
+    	    	if ('http' != substr($value, $index+5, 4)) {
+    	    		$value = substr($value, 0, $index+5).'http://'.$_SERVER['HTTP_HOST'].'/'.substr($value, $index+5);
+    	    	} 
+    	    }
+    	    $retArr[$key] = $value;
 	    }
 	    return $retArr;
 	}

@@ -6,7 +6,7 @@
  * @author simonwade
  */
 
-class SSTools_Social_GooglePlusButton {
+class SSTools_Social_GooglePlusButton extends Object implements SSTools_Core_RenderableInterface {
 
 	public $size = 'medium';
 	public $annotation = 'none';
