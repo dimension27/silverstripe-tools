@@ -17,7 +17,7 @@ class UploadFolderManager implements IUploadFolderManager {
 		self::$providers[] = $provider;
 	}
 
-	static function getUploadFolder( DataObject $dataObject, FormField $field, $subDir = null ) {
+	static function getUploadFolder( DataObject $dataObject, FormField $field = null, $subDir = null ) {
 		foreach( self::$providers as $provider ) {
 			if( $folder = $provider->getUploadFolderForObject($dataObject, $field, $subDir) ) {
 				break;
