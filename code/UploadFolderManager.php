@@ -20,12 +20,13 @@ class UploadFolderManager implements IUploadFolderManager {
 	static function getUploadFolder( DataObject $dataObject, FormField $field, $subDir = null ) {
 		foreach( self::$providers as $provider ) {
 			if( $folder = $provider->getUploadFolderForObject($dataObject, $field, $subDir) ) {
-				return $folder;
+				break;
 			}
 		}
-		if( $folder = self::getDefaultProvider()->getUploadFolderForObject($dataObject, $field, $subDir) ) {
-			return $folder;
+		if( !$folder ) {
+			$folder = self::getDefaultProvider()->getUploadFolderForObject($dataObject, $field, $subDir);
 		}
+		return $folder;
 	}
 
 	static function setUploadFolder( DataObject $dataObject, FormField $field, $subDir = null ) {
@@ -39,7 +40,7 @@ class UploadFolderManager implements IUploadFolderManager {
 		if( !$dataObject ) {
 			$dataObject = singleton($field->sourceClass());
 		}
-		if( $folder = self::getUploadFolderForObject($dataObject, $field, $subDir) ) {
+		if( $folder = self::getUploadFolder($dataObject, $field, $subDir) ) {
 			self::setFieldUploadFolder($field, $folder);
 			return $folder;
 		}
@@ -67,7 +68,9 @@ class UploadFolderManager implements IUploadFolderManager {
 		$options = isset(self::$options[get_class($dataObject)])
 				? self::$options[get_class($dataObject)]
 				: self::$defaultOptions;
-		if( class_exists('Subsite') && $options['subsite'] && $site = Subsite::currentSubsite() ) {
+		if( class_exists('Subsite') 
+				&& $options['subsite'] 
+				&& $site = Subsite::currentSubsite() ) {
 			$folder .= Utils::slugify($site->Title, false);
 		}
 		$folder .= $options['folder']
@@ -98,10 +101,29 @@ class UploadFolderManager implements IUploadFolderManager {
 		self::$options[$className] = array_merge(self::$defaultOptions, $options);
 	}
 
+	static function printUploadFolders() {
+		foreach( ClassInfo::allClasses() as $className ) {
+			if( !in_array($className, array('SS_Benchmark_Timer'))
+					&& class_exists($className)
+					&& is_subclass_of($className, 'DataObject') ) {
+				new $className;
+			}
+		}
+		foreach( self::$options as $className => $options ) {
+			echo "$className: ".self::getUploadFolder(new $className, new FileUploadField($className)).NL;
+		}
+	}
+
 }
 
 interface IUploadFolderManager {
 	function getUploadFolderForObject( DataObject $dataObject, FormField $field, $subDir = null );
 }
 
-?>
+class UploadFolderManagerController extends CliController {
+
+	function print_upload_folders() {
+		UploadFolderManager::printUploadFolders();
+	}
+
+}
