@@ -117,10 +117,11 @@ class RestrictedFileController extends Controller {
 	 * Authorise and send a document to the client if they match the MemberID in the request or are an admin.
 	 * @param SS_HTTPRequest $request
 	 */
-	public static function handleMemberDocumentRequest( SS_HTTPRequest $request, Controller $controller ) {
+	public static function handleMemberDocumentRequest(
+			SS_HTTPRequest $request, Controller $controller, $code = 'ADMIN' ) {
 		$member = Member::currentUser(); /* @var $member Member */
 		$Filename = $request->requestVar('Filename');
-		if( $member && (($member->ID == $request->requestVar('MemberID')) || Permission::check('ADMIN')) ) {
+		if( $member && (($member->ID == $request->requestVar('MemberID')) || Permission::check($code)) ) {
 			if( $file = DataObject::get_one('File', "Filename = '".Convert::raw2sql($Filename)."'") ) {
 				return $request->send_file(
 					file_get_contents($file->getFullPath()),
