@@ -23,7 +23,7 @@ class UploadFolderManager implements IUploadFolderManager {
 				break;
 			}
 		}
-		if( !$folder ) {
+		if( !isset($folder) || !$folder ) {
 			$folder = self::getDefaultProvider()->getUploadFolderForObject($dataObject, $field, $subDir);
 		}
 		return $folder;
