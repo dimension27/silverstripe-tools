@@ -74,7 +74,7 @@ jQuery(function($) {
 													resultIndex = 0;
 													for( index in result ) {
 														if( $.inArray(index, ['ID', 'RelationshipID']) == -1 ) {
-															$columns.eq(resultIndex).text(result[index]);
+															$columns.eq(resultIndex).text(result[index] ? result[index] : '');
 															resultIndex++;
 														}
 													}
