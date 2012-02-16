@@ -51,10 +51,9 @@ class OptimisedManyManyDataObjectManager extends ManyManyDataObjectManager {
 	}
 	
 	function attach() {
-		$fieldName = $this->name;
-		$saveDest = $this->controller->$fieldName();
-		$saveDest->add($_GET['id']);
-		return true;
+		if( $id = $_GET['id'] )
+			$saveDest = $this->controller->{$this->name}()->add($id);
+		return $id;
 	}
 	
 	function getDataObject() {
