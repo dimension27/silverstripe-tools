@@ -10,7 +10,7 @@
  */
 class FilesystemPublisherExtension extends SiteTreeDecorator {
 
-	public static $update_siblings_on_publish = true;
+	public static $update_siblings_on_publish = false;
 	public static $exclude_classes = array('UserDefinedForm');
 	public static $cache_filter = '';
 	protected static $subclass_filter;
