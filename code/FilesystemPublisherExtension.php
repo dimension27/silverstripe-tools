@@ -11,6 +11,7 @@
 class FilesystemPublisherExtension extends SiteTreeDecorator {
 
 	public static $update_siblings_on_publish = false;
+	public static $delete_cache_on_publish = false;
 	public static $exclude_classes = array('UserDefinedForm');
 	public static $cache_filter = '';
 	protected static $subclass_filter;
@@ -21,6 +22,23 @@ class FilesystemPublisherExtension extends SiteTreeDecorator {
 	 */
 	static function exclude_class( $class ) {
 		self::$exclude_classes[] = $class;
+	}
+
+	/**
+	 * Called after a page is published.
+	 */
+	function onAfterPublish($original) {
+		if( self::$delete_cache_on_publish ) {
+			$publisher = $this->owner->getExtensionInstance('FilesystemPublisher'); /* @var $publisher FilesystemPublisher */
+			$publisher->setOwner($this->owner);
+			$files = $publisher->urlsToPaths($this->allPagesToCache());
+			foreach( $files as $url => $file ) {
+				$file = $publisher->getDestDir().'/'.$file;
+				if( is_file($file) ) {
+					unlink($file);
+				}
+			}
+		}
 	}
 
 	/**
