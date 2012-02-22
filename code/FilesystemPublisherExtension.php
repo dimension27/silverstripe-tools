@@ -43,6 +43,10 @@ class FilesystemPublisherExtension extends SiteTreeDecorator {
 		return $urls;
 	}
 
+	function pagesAffectedByChanges() {
+		return $this->getURLsToCache();
+	}
+
 	function getURLsToCache() {
 		// Defines any pages which should not be cached
 		$excluded = array();
@@ -51,12 +55,6 @@ class FilesystemPublisherExtension extends SiteTreeDecorator {
 			$urls[] = $this->owner->AbsoluteLink();
 		}
 		$urls = array_merge($urls, $this->owner->subPagesToCache());
-		$rv = array();
-		foreach( $urls as $url ) {
-			if( !in_array($url, $excluded) ) {
-				$rv[] = $url;
-			}
-		}
 		if( self::$update_siblings_on_publish ) {
 			if( $p = $this->owner->Parent ) {
 				$siblings = $p->Children(self::get_cache_filter());
