@@ -29,14 +29,18 @@ class FilesystemPublisherExtension extends SiteTreeDecorator {
 	 */
 	function onAfterPublish($original) {
 		if( self::$delete_cache_on_publish ) {
-			$publisher = $this->owner->getExtensionInstance('FilesystemPublisher'); /* @var $publisher FilesystemPublisher */
-			$publisher->setOwner($this->owner);
-			$files = $publisher->urlsToPaths($this->allPagesToCache());
-			foreach( $files as $url => $file ) {
-				$file = $publisher->getDestDir().'/'.$file;
-				if( is_file($file) ) {
-					unlink($file);
-				}
+			$this->deleteAllCachedFiles();
+		}
+	}
+
+	function deleteAllCachedFiles() {
+		$publisher = $this->owner->getExtensionInstance('FilesystemPublisher'); /* @var $publisher FilesystemPublisher */
+		$publisher->setOwner($this->owner);
+		$files = $publisher->urlsToPaths($this->allPagesToCache());
+		foreach( $files as $url => $file ) {
+			$file = $publisher->getDestDir().'/'.$file;
+			if( is_file($file) ) {
+				unlink($file);
 			}
 		}
 	}
