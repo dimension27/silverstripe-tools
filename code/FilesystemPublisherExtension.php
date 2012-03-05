@@ -25,6 +25,16 @@ class FilesystemPublisherExtension extends SiteTreeDecorator {
 	}
 
 	/**
+	 * Excludes the specified classes and their subclasses.
+	 * @param array $classes
+	 */
+	static function exclude_classes( $classes ) {
+		foreach( $classes as $class ) {
+			self::$exclude_classes[] = $class;
+		}
+	}
+
+	/**
 	 * Called after a page is published.
 	 */
 	function onAfterPublish($original) {
