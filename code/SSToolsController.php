@@ -31,7 +31,7 @@ class SSToolsController extends CliController {
 			if( !is_dir($dir = dirname($outputFile)) ) {
 				mkdir($dir);
 			}
-			$command = "wget -o $outputFile -e robots=off -r -p '$url'";
+			$command = "wget -o $outputFile --execute robots=off --recursive --page-requisites '$url'";
 			echo "Crawling $url (output saved to $workingFolder)...\n";
 			// If you're impatient, you can run:
 			// tail -f public/sapphire/wget-output.log | egrep 'awaiting response...' | egrep -v '(200 OK|302 Found)'
