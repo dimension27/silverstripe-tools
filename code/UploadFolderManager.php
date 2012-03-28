@@ -73,9 +73,11 @@ class UploadFolderManager implements IUploadFolderManager {
 				&& $site = Subsite::currentSubsite() ) {
 			$folder .= Utils::slugify($site->Title, false);
 		}
-		$folder .= $options['folder']
+		$folder .= ($options['folder'] !== null
 				? '/'.$options['folder']
-				: '/Uploads/'.preg_replace('/[^[:alnum:]]/', '', $dataObject->plural_name());
+				: $dataObject instanceof SiteTree
+						? '/Uploads'
+						: '/Uploads/'.preg_replace('/[^[:alnum:]]/', '', $dataObject->plural_name()));
 		$folder .= $options['date']
 				? '/'.date($options['date']) : '';
 		$folder .= $options['ID']
@@ -99,19 +101,6 @@ class UploadFolderManager implements IUploadFolderManager {
 
 	static function setOptions( $className, $options ) {
 		self::$options[$className] = array_merge(self::$defaultOptions, $options);
-	}
-
-	static function printUploadFolders() {
-		foreach( ClassInfo::allClasses() as $className ) {
-			if( !in_array($className, array('SS_Benchmark_Timer'))
-					&& class_exists($className)
-					&& is_subclass_of($className, 'DataObject') ) {
-				new $className;
-			}
-		}
-		foreach( self::$options as $className => $options ) {
-			echo "$className: ".self::getUploadFolder(new $className, new FileUploadField($className)).NL;
-		}
 	}
 
 }
