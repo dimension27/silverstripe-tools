@@ -105,8 +105,8 @@ class BetterImage extends Image
 
 		if( $height > $fullHeight && $width > $fullWidth )
 			return $this;
-		$newHeight = ($width / $fullWidth) * $fullWidth;
-		return $newHeight < $height ? $this->SetWidth($width) : $this->SetHeight($height);
+
+		return $fullWidth > $fullHeight ? $this->SetWidth($width) : $this->SetHeight($height);
 	}
 
 	public function SetSize($width, $height) {
