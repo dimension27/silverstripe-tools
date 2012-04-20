@@ -3,7 +3,7 @@
  * Defines the interface that must be implemented for an object to be used directly in a template.
  * Which doesn't actually seem to be defined anywhere.
  * @author sergeim
- * @ffs
+ * @nb
  *
  */
 interface SSTools_Core_RenderableInterface {
