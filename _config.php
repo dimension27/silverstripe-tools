@@ -10,4 +10,5 @@ if( Director::is_cli() ) {
 SortableDataObject::add_sortable_class('LinkListDecorator_Item');
 SortableDataObject::add_sortable_class('FeaturePageDecorator_Item');
 
+ShortcodeParser::get()->register('YouTube', array('Page','YouTubeShortCodeHandler'));
 ?>
