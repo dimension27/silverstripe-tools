@@ -38,7 +38,7 @@ class LinkFieldsDecorator extends DataObjectDecorator {
 	public function Anchor() {
 		if( $url = $this->LinkURL() ) {
 			return "<a href='$url' class='".$this->LinkClass()."' "
-					."title='".htmlspecialchars('Go to the '.$this->owner->Title)."'>"
+					."title='".htmlspecialchars('Go to '.$this->owner->Title)."'>"
 					.htmlspecialchars($this->owner->LinkLabel)."</a>";
 		}
 	}
