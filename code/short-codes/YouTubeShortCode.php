@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * Register this parser with the following code in your _config.php file:
+ *
+ *   ShortcodeParser::get()->register('YouTube', array('YouTubeShortCode', 'handleShortcode'));
+ *
+ * You can then insert a YouTube video into your content using:
+ *
+ *   [YouTube id=3UTu6lV8ppY]
+ *
+ * or
+ *
+ *   [YouTube id=3UTu6lV8ppY]This is the caption[/YouTube]
+ */
 class YouTubeShortCode {
 
 	public static $defaults = array(
