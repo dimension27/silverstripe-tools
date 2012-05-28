@@ -116,4 +116,12 @@ class Utils {
 		return preg_replace('/[-\s]+/', '-', trim(preg_replace('/[^\w\s-]/', '', $value)));
 	}
 
+	public static function reverseSet( DataObjectSet $set ) {
+		$array = array();
+		foreach( $set as $item ) {
+			$array[] = $item;
+		}
+		return new DataObjectSet(array_reverse($array));
+	}
+
 }
