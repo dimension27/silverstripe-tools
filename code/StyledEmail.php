@@ -1,6 +1,10 @@
 <?php
 class SSTools_StyledEmail extends Email {
 	
+	/**
+	 * CSS
+	 * @var string
+	 */
 	public $CSS = null;
 	
 	public function send() {
