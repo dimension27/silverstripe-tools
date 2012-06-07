@@ -1,6 +1,8 @@
 <?php
 class Utils {
 
+	protected static $currentHost = null;
+
 	public static function ThemeDir( $subtheme = false ) {
 		if( $theme = SSViewer::current_theme() ) {
 			return THEMES_DIR . "/$theme" . ($subtheme ? "_$subtheme" : null);
@@ -86,6 +88,14 @@ class Utils {
 		if( class_exists('Subsite') ) {
 			Subsite::disable_subsite_filter($oldState);
 		}
+	}
+
+	public static function currentHost() {
+		if( self::$currentHost === null )
+			self::$currentHost = ( isset($_SERVER['HTTP_HOST']) ?
+										'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . "://{$_SERVER['HTTP_HOST']}" :
+										'' );
+		return self::$currentHost;
 	}
 	
 	/**
