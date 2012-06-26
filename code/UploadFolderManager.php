@@ -75,15 +75,19 @@ class UploadFolderManager implements IUploadFolderManager {
 		}
 		$folder .= ($options['folder'] !== null
 				? '/'.$options['folder']
-				: $dataObject instanceof SiteTree
+				: ($dataObject instanceof SiteTree
 						? '/Uploads'
-						: '/Uploads/'.preg_replace('/[^[:alnum:]]/', '', $dataObject->plural_name()));
+						: '/Uploads/'.Utils::slugify($dataObject->plural_name())
+				)
+		);
 		$folder .= $options['date']
 				? '/'.date($options['date']) : '';
 		$folder .= $options['ID']
 				? '/'.$dataObject->ID : '';
+		$folder .= $options['ID-Title']
+				? '/'.$dataObject->ID.'-'.Utils::slugify($dataObject->getTitle()) : '';
 		$folder .= $options['Title']
-				? '/'.preg_replace('/[^[:alnum:]]/', '', $dataObject->getTitle()) : '';
+				? '/'.Utils::slugify($dataObject->getTitle()) : '';
 		if( $subDir ) {
 			$folder .= '/'.$subDir;
 		}
@@ -96,6 +100,7 @@ class UploadFolderManager implements IUploadFolderManager {
 		'date' => 'Y',
 		'ID' => null,
 		'Title' => null,
+		'ID-Title' => null,
 		'subsite' => true,
 	);
 
