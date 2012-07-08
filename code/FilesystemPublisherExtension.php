@@ -10,8 +10,9 @@
  */
 class FilesystemPublisherExtension extends SiteTreeDecorator {
 
-	public static $update_siblings_on_publish = true;
-	public static $exclude_classes = array('UserDefinedForm');
+	public static $update_siblings_on_publish = false;
+	public static $delete_cache_on_publish = false;
+	public static $exclude_classes = array('UserDefinedForm', 'MemberProfilePage', 'RedirectorPage');
 	public static $cache_filter = '';
 	protected static $subclass_filter;
 
@@ -21,6 +22,37 @@ class FilesystemPublisherExtension extends SiteTreeDecorator {
 	 */
 	static function exclude_class( $class ) {
 		self::$exclude_classes[] = $class;
+	}
+
+	/**
+	 * Excludes the specified classes and their subclasses.
+	 * @param array $classes
+	 */
+	static function exclude_classes( $classes ) {
+		foreach( $classes as $class ) {
+			self::$exclude_classes[] = $class;
+		}
+	}
+
+	/**
+	 * Called after a page is published.
+	 */
+	function onAfterPublish($original) {
+		if( self::$delete_cache_on_publish ) {
+			$this->deleteAllCachedFiles();
+		}
+	}
+
+	function deleteAllCachedFiles() {
+		$publisher = $this->owner->getExtensionInstance('FilesystemPublisher'); /* @var $publisher FilesystemPublisher */
+		$publisher->setOwner($this->owner);
+		$files = $publisher->urlsToPaths($this->allPagesToCache());
+		foreach( $files as $url => $file ) {
+			$file = $publisher->getDestDir().'/'.$file;
+			if( is_file($file) ) {
+				unlink($file);
+			}
+		}
 	}
 
 	/**
@@ -43,6 +75,10 @@ class FilesystemPublisherExtension extends SiteTreeDecorator {
 		return $urls;
 	}
 
+	function pagesAffectedByChanges() {
+		return $this->getURLsToCache();
+	}
+
 	function getURLsToCache() {
 		// Defines any pages which should not be cached
 		$excluded = array();
@@ -51,12 +87,6 @@ class FilesystemPublisherExtension extends SiteTreeDecorator {
 			$urls[] = $this->owner->AbsoluteLink();
 		}
 		$urls = array_merge($urls, $this->owner->subPagesToCache());
-		$rv = array();
-		foreach( $urls as $url ) {
-			if( !in_array($url, $excluded) ) {
-				$rv[] = $url;
-			}
-		}
 		if( self::$update_siblings_on_publish ) {
 			if( $p = $this->owner->Parent ) {
 				$siblings = $p->Children(self::get_cache_filter());

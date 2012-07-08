@@ -17,14 +17,14 @@ class UploadFolderManager implements IUploadFolderManager {
 		self::$providers[] = $provider;
 	}
 
-	static function getUploadFolder( DataObject $dataObject, FormField $field, $subDir = null ) {
+	static function getUploadFolder( DataObject $dataObject, FormField $field = null, $subDir = null ) {
 		$folder = null;
 		foreach( self::$providers as $provider ) {
 			if( $folder = $provider->getUploadFolderForObject($dataObject, $field, $subDir) ) {
 				break;
 			}
 		}
-		if( !$folder ) {
+		if( !isset($folder) || !$folder ) {
 			$folder = self::getDefaultProvider()->getUploadFolderForObject($dataObject, $field, $subDir);
 		}
 		return $folder;
@@ -74,15 +74,21 @@ class UploadFolderManager implements IUploadFolderManager {
 				&& $site = Subsite::currentSubsite() ) {
 			$folder .= Utils::slugify($site->Title, false);
 		}
-		$folder .= $options['folder']
+		$folder .= ($options['folder'] !== null
 				? '/'.$options['folder']
-				: '/Uploads/'.preg_replace('/[^[:alnum:]]/', '', $dataObject->plural_name());
+				: ($dataObject instanceof SiteTree
+						? '/Uploads'
+						: '/Uploads/'.Utils::slugify($dataObject->plural_name())
+				)
+		);
 		$folder .= $options['date']
 				? '/'.date($options['date']) : '';
 		$folder .= $options['ID']
 				? '/'.$dataObject->ID : '';
+		$folder .= $options['ID-Title']
+				? '/'.$dataObject->ID.'-'.Utils::slugify($dataObject->getTitle()) : '';
 		$folder .= $options['Title']
-				? '/'.preg_replace('/[^[:alnum:]]/', '', $dataObject->getTitle()) : '';
+				? '/'.Utils::slugify($dataObject->getTitle()) : '';
 		if( $subDir ) {
 			$folder .= '/'.$subDir;
 		}
@@ -95,24 +101,12 @@ class UploadFolderManager implements IUploadFolderManager {
 		'date' => 'Y',
 		'ID' => null,
 		'Title' => null,
+		'ID-Title' => null,
 		'subsite' => true,
 	);
 
 	static function setOptions( $className, $options ) {
 		self::$options[$className] = array_merge(self::$defaultOptions, $options);
-	}
-
-	static function printUploadFolders() {
-		foreach( ClassInfo::allClasses() as $className ) {
-			if( !in_array($className, array('SS_Benchmark_Timer'))
-					&& class_exists($className)
-					&& is_subclass_of($className, 'DataObject') ) {
-				new $className;
-			}
-		}
-		foreach( self::$options as $className => $options ) {
-			echo "$className: ".self::getUploadFolder(new $className, new FileUploadField($className)).NL;
-		}
 	}
 
 }

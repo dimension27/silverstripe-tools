@@ -76,6 +76,7 @@ class FeaturePageDecorator_Item extends DataObject {
 	static $singular_name = 'Feature Item';
 	static $plural_name = 'Feature Items';
 	static $disabled_fields = array();
+	static $extensions = array('LinkFieldsDecorator');
 
 	public function getCMSFields() {
 		$fields = FormUtils::createMain();

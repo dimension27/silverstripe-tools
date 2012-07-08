@@ -1,6 +1,8 @@
 <?php
 class Utils {
 
+	protected static $currentHost = null;
+
 	public static function ThemeDir( $subtheme = false ) {
 		if( $theme = SSViewer::current_theme() ) {
 			return THEMES_DIR . "/$theme" . ($subtheme ? "_$subtheme" : null);
@@ -87,6 +89,14 @@ class Utils {
 			Subsite::disable_subsite_filter($oldState);
 		}
 	}
+
+	public static function currentHost() {
+		if( self::$currentHost === null )
+			self::$currentHost = ( isset($_SERVER['HTTP_HOST']) ?
+										'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . "://{$_SERVER['HTTP_HOST']}" :
+										'' );
+		return self::$currentHost;
+	}
 	
 	/**
 	 * Returns the full url to the current page.
@@ -114,6 +124,50 @@ class Utils {
 			$value = strtolower($value);
 		}
 		return preg_replace('/[-\s]+/', '-', trim(preg_replace('/[^\w\s-]/', '', $value)));
+	}
+
+	public static function reverseSet( DataObjectSet $set ) {
+		$array = array();
+		foreach( $set as $item ) {
+			$array[] = $item;
+		}
+		return new DataObjectSet(array_reverse($array));
+	}
+
+	/**
+	 * Removes the connection between a DataObject and its relations
+	 * Can optionally delete the relation
+	 *
+	 * @param DataObject $caller
+	 * @param string $relationship e.g, a Member belongs to a Group and the relationship is called "Groups"
+	 * @param mixed $subsite integer | DataObject
+	 * @param boolean $removeObjects delete the related object as well as the relationship?
+	 * @author Adam Rice <development@HashNotAdam.com>
+	 */
+	public static function abandonRelationships( $caller, $relationship, $subsite = 0, $removeObjects = false ) {
+		$relatedObjects = $caller->{$relationship}();
+
+		if( $relatedObjects && $relatedObjects->exists() ) {
+			Subsite::temporarily_set_subsite(is_object($subsite) ? $subsite->ID : $subsite);
+
+			// something-to-many or 1-to-1 relationship?
+			$manyRelationship = (gettype($relatedObjects) == 'ComponentSet');
+			if( !$manyRelationship )
+				$callerID = "{$caller->ClassName}ID";
+
+			foreach( $relatedObjects as $object ) {
+				if( $manyRelationship )
+					$caller->{$relationship}()->remove($object);
+				elseif( !$removeObjects ) {
+					$object->$callerID = NULL;
+					$object->write();
+				}
+				if( $removeObjects )
+					$object->delete();
+			}
+
+			Subsite::restore_previous_subsite();
+		}
 	}
 
 }

@@ -158,7 +158,7 @@ class FormUtils {
 			$rv = $set->map('ID', 'Title', $emptyString);
 		}
 		else {
-			$rv = array('' => '-- Empty --');
+			$rv = array('' => $emptyString);
 		}
 		return $rv;
 	}
