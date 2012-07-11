@@ -125,6 +125,12 @@ class BetterImage extends Image
 	}
 
 	public function SetPaddedSize($width, $height) {
+		if( !$width || $width == 'null' ) {
+			$width = $this->getWidth();
+		}
+		if( !$height || $height == 'null' ) {
+			$height = $this->getHeight();
+		}
 		return $this->getFormattedImage('PaddedImage', $width, $height);
 	}
 
