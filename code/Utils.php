@@ -1,6 +1,8 @@
 <?php
 class Utils {
 
+	protected static $currentHost = null;
+
 	public static function ThemeDir( $subtheme = false ) {
 		if( $theme = SSViewer::current_theme() ) {
 			return THEMES_DIR . "/$theme" . ($subtheme ? "_$subtheme" : null);
@@ -87,6 +89,14 @@ class Utils {
 			Subsite::disable_subsite_filter($oldState);
 		}
 	}
+
+	public static function currentHost() {
+		if( self::$currentHost === null )
+			self::$currentHost = ( isset($_SERVER['HTTP_HOST']) ?
+										'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . "://{$_SERVER['HTTP_HOST']}" :
+										'' );
+		return self::$currentHost;
+	}
 	
 	/**
 	 * Returns the full url to the current page.
@@ -114,6 +124,14 @@ class Utils {
 			$value = strtolower($value);
 		}
 		return preg_replace('/[-\s]+/', '-', trim(preg_replace('/[^\w\s-]/', '', $value)));
+	}
+
+	public static function reverseSet( DataObjectSet $set ) {
+		$array = array();
+		foreach( $set as $item ) {
+			$array[] = $item;
+		}
+		return new DataObjectSet(array_reverse($array));
 	}
 
 	/**
