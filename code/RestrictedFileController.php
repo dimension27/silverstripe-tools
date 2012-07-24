@@ -9,7 +9,7 @@
  * RestrictedFileController::activate();
  * RestrictedFileController::addRoute('/(?P<Filename>assets\/private\/.*)/', 'my-controller/download');
  * 
- * You can run restricted-file/get-rewrites to output the mod_rewrite commands for your routes
+ * You can run `sake restricted-file/get-rewrites` to output the mod_rewrite commands for your routes
  * to be added into assets/.htaccess.
  * 
  * @author Alex Hayes <alex.hayes@dimension27.com>
