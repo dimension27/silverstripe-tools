@@ -11,7 +11,7 @@ class ScriptAdExtension extends DataObjectDecorator {
 	}
 
 	function updateCMSFields( FieldSet $fields ) {
-		$fields->addFieldToTab('Root.Main', $field = new TextareaField('Script'), 'InternalPageID');
+		$fields->addFieldToTab('Root.Main', $field = new TextareaField('Script'), 'LinkTypeLabel');
 	}
 
 }
