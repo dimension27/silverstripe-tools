@@ -43,6 +43,19 @@ class LinkFieldsDecorator extends DataObjectDecorator {
 		}
 	}
 
+	public function HasLink() {
+		switch( $this->owner->LinkType ) {
+			case 'NoLink':
+				return false;
+			case 'Internal':
+				return $this->owner->LinkTarget()->exists();
+			case 'External':
+				return $this->owner->LinkTargetURL ? true : false;
+			case 'File':
+				return $this->owner->LinkFile()->exists();
+		}
+	}
+
 }
 
 ?>
