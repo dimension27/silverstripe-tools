@@ -45,7 +45,7 @@ class SSTools_Social_FacebookLikeButton extends Object implements SSTools_Core_R
 	 * The height of the plugin, in pixels.
 	 * @var integer
 	 */
-	public $Height = 80;
+	public $Height = 60;
 	
 	/**
 	 * The layout style.
