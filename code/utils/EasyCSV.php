@@ -27,14 +27,14 @@ class EasyCSV implements Iterator {
 
     private $delimiter;
 
-	public function __construct($filename, $process_header = true, $method = 'class') {
+	public function __construct($filename, $process_header = true, $method = 'class', $delimiter = ",") {
 		$this->filename = $filename;
 		$this->file_handle = false;
 		$this->columns = array();
 		$this->row = false;
 		$this->row_number = 0;
 		$this->header = true;
-        $this->delimiter = ',';
+        $this->delimiter = $delimiter;
 		$this->set_access_method($method);
 		$this->row_buffer = 5000;
 		$this->process_header($process_header);
@@ -117,6 +117,15 @@ class EasyCSV implements Iterator {
 				return false;
 			}
 		}
+	}
+
+	public function set_columns($columns) {
+		foreach($columns as $column) {
+			$this->columns[$column] = count($this->columns);
+		}
+		$this->header = true;
+		$this->column_count = count($this->columns);
+		$this->set_access_method('class');
 	}
 
 	private function read_column_titles() {
@@ -218,6 +227,10 @@ class EasyCSV implements Iterator {
 		return $this->row_number;
 	}
 
+	public function index() {
+		return $this->row_number - 1;
+	}
+	
 	public function next() {
 		$this->row = fgetcsv($this->file_handle, $this->row_buffer, $this->delimiter);
 		$this->row_number++;
@@ -226,5 +239,6 @@ class EasyCSV implements Iterator {
 	public function get_columns() {
 		return $this->columns;
 	}
+	
 
 }
