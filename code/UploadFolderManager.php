@@ -64,10 +64,15 @@ class UploadFolderManager implements IUploadFolderManager {
 		return self::$defaultProvider;
 	}
 
-	function getUploadFolderForObject( DataObject $dataObject, FormField $field, $subDir = null ) {
+	/**
+	 * @see IUploadFolderManager::getUploadFolderForObject($dataObject, $field, $subDir)
+	 * @param DataObject $dataObject
+	 */
+	function getUploadFolderForObject( $dataObject, FormField $field, $subDir = null ) {
 		$folder = '';
-		$options = isset(self::$options[get_class($dataObject)])
-				? self::$options[get_class($dataObject)]
+		$class = is_object($dataObject) ? get_class($dataObject) : $dataObject;
+		$options = isset(self::$options[$class])
+				? self::$options[$class]
 				: self::$defaultOptions;
 		if( class_exists('Subsite') 
 				&& $options['subsite'] 
@@ -112,7 +117,7 @@ class UploadFolderManager implements IUploadFolderManager {
 }
 
 interface IUploadFolderManager {
-	function getUploadFolderForObject( DataObject $dataObject, FormField $field, $subDir = null );
+	function getUploadFolderForObject( $dataObject, FormField $field, $subDir = null );
 }
 
 class UploadFolderManagerController extends CliController {
