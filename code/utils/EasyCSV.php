@@ -12,7 +12,7 @@ class EasyCSV implements Iterator {
 	private $filename;
 
 	private $columns;
-	
+
 	private $column_count;
 
 	private $row;
@@ -132,7 +132,7 @@ class EasyCSV implements Iterator {
 		$row = fgetcsv($this->file_handle, $this->row_buffer, $this->delimiter);
         $blank_count = 0;
 		foreach ($row as $column_name) {
-            
+
 			$column_name = trim($column_name);
 			$column_name = str_replace(' ','_',$column_name);
             if (!strlen($column_name)) {
@@ -200,12 +200,12 @@ class EasyCSV implements Iterator {
 					else if ($this->column_count > $row_count) {
 						// Pad out the Row to equal the number of columns
 						return array_combine(
-									array_keys($this->columns), 
+									array_keys($this->columns),
 									array_merge($this->row, array_fill($row_count, $this->column_count - $row_count, false)));
 					}
 					else if ($this->column_count < $row_count) {
 						return array_combine(
-									array_keys($this->columns), 
+									array_keys($this->columns),
 									array_slice($this->row, 0, $this->column_count, true));
 					}
 					return array();
@@ -227,10 +227,14 @@ class EasyCSV implements Iterator {
 		return $this->row_number;
 	}
 
+	public function get_line_number() {
+		return $this->row_number;
+	}
+
 	public function index() {
 		return $this->row_number - 1;
 	}
-	
+
 	public function next() {
 		$this->row = fgetcsv($this->file_handle, $this->row_buffer, $this->delimiter);
 		$this->row_number++;
@@ -239,6 +243,9 @@ class EasyCSV implements Iterator {
 	public function get_columns() {
 		return $this->columns;
 	}
-	
+
+	public function get_row() {
+		return $this->row;
+	}
 
 }
