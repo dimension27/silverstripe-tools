@@ -1,7 +1,7 @@
 <?php
 
 /**
- * n.b. This decorator doesn't implement updateCMSFields(), you should add the fields using 
+ * n.b. This decorator doesn't implement updateCMSFields(), you should add the fields using
  * LinkFields::addLinkFields();
  * @author simonwade
  */
@@ -35,11 +35,15 @@ class LinkFieldsDecorator extends DataObjectDecorator {
 				.($this->owner->OpenInLightbox ? ' lightbox' : '');
 	}
 
-	public function Anchor() {
+	public function Anchor( $label = null ) {
 		if( $url = $this->LinkURL() ) {
-			return "<a href='$url' class='".$this->LinkClass()."' "
-					."title='".htmlspecialchars('Go to '.$this->owner->Title)."'>"
-					.htmlspecialchars($this->owner->LinkLabel)."</a>";
+			if( $label === null ) {
+				$label = htmlspecialchars($this->owner->LinkLabel);
+			}
+			return "<a href='$url' class='{$this->LinkClass()}' "
+					. "title='" . htmlspecialchars($this->owner->Title) . "' "
+					. ($this->owner->LinkType == 'External' ? 'target="_blank" ' : '') . ">"
+					. $label."</a>";
 		}
 	}
 
