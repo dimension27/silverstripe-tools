@@ -3,7 +3,7 @@
 class UploadFolderManager implements IUploadFolderManager {
 
 	/**
-	 * @var array of IUploadFolderManager objects 
+	 * @var array of IUploadFolderManager objects
 	 */
 	protected static $providers = array();
 
@@ -74,8 +74,8 @@ class UploadFolderManager implements IUploadFolderManager {
 		$options = isset(self::$options[$class])
 				? self::$options[$class]
 				: self::$defaultOptions;
-		if( class_exists('Subsite') 
-				&& $options['subsite'] 
+		if( class_exists('Subsite')
+				&& $options['subsite']
 				&& $site = Subsite::currentSubsite() ) {
 			$folder .= Utils::slugify($site->Title, false);
 		}
@@ -83,7 +83,7 @@ class UploadFolderManager implements IUploadFolderManager {
 				? '/'.$options['folder']
 				: ($dataObject instanceof SiteTree
 						? '/Uploads'
-						: '/Uploads/'.Utils::slugify($dataObject->plural_name())
+						: '/Uploads/'.Utils::slugify($dataObject->plural_name(), false)
 				)
 		);
 		$folder .= $options['date']
@@ -91,7 +91,7 @@ class UploadFolderManager implements IUploadFolderManager {
 		$folder .= $options['ID']
 				? '/'.$dataObject->ID : '';
 		$folder .= $options['ID-Title']
-				? '/'.$dataObject->ID.'-'.Utils::slugify($dataObject->getTitle()) : '';
+				? '/'.$dataObject->ID.'-'.Utils::slugify($dataObject->getTitle(), false) : '';
 		$folder .= $options['Title']
 				? '/'.Utils::slugify($dataObject->getTitle()) : '';
 		if( $subDir ) {
