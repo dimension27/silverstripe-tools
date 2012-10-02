@@ -16,10 +16,11 @@
 class YouTubeShortCode {
 
 	public static $defaults = array(
-			'autoplay' => false,
-			'loop' => false,
+			'autoplay' => 0,
+			'loop' => 0,
+			'rel' => 0,
 			'width' => 640,
-			'height' => 385,
+			'height' => 385
 	);
 
 	function handleShortcode( $arguments, $enclosedContent = null, $parser = null ) {
