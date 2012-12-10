@@ -40,10 +40,13 @@ class LinkFieldsDecorator extends DataObjectDecorator {
 			if( $label === null ) {
 				$label = htmlspecialchars($this->owner->LinkLabel);
 			}
-			return "<a href='$url' class='{$this->LinkClass()}' "
-					. "title='" . htmlspecialchars($this->owner->Title) . "' "
-					. ($this->owner->LinkType == 'External' ? 'target="_blank" ' : '') . ">"
-					. $label."</a>";
+			$title = htmlspecialchars($this->owner->Title);
+			return "<a href='$url' class='{$this->LinkClass()} page-event' "
+					. "title='$title' "
+					. ($this->owner->LinkType == 'External' ? 'target="_blank" ' : '')
+					. "data-category='" . preg_replace('/(.)([A-Z])/', '$1 $2', $this->owner->class) . "' "
+					. "data-label='$title'"
+					. ">$label</a>";
 		}
 	}
 
