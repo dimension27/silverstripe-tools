@@ -68,7 +68,7 @@ class UploadFolderManager implements IUploadFolderManager {
 	 * @see IUploadFolderManager::getUploadFolderForObject($dataObject, $field, $subDir)
 	 * @param DataObject $dataObject
 	 */
-	function getUploadFolderForObject( $dataObject, FormField $field, $subDir = null ) {
+	function getUploadFolderForObject( DataObject $dataObject, FormField $field, $subDir = null ) {
 		$folder = '';
 		$class = is_object($dataObject) ? get_class($dataObject) : $dataObject;
 		$options = isset(self::$options[$class])
@@ -117,7 +117,7 @@ class UploadFolderManager implements IUploadFolderManager {
 }
 
 interface IUploadFolderManager {
-	function getUploadFolderForObject( $dataObject, FormField $field, $subDir = null );
+	function getUploadFolderForObject( DataObject $dataObject, FormField $field, $subDir = null );
 }
 
 class UploadFolderManagerController extends CliController {
