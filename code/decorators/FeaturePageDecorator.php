@@ -11,12 +11,12 @@
  * Template example:
  *
  *	<ul id="featured-items">
- *	<% control LimitFeatureItems(3) %>
+ *	  <% control LimitFeatureItems(3) %>
  *	    <li>
- *	    	<% if LinkURL %><a href="$LinkURL" title="$LinkLabel">$Image.SetCroppedSize(237, 168)</a>
- *	    	<% else %>$Image.SetCroppedSize(237, 168)<% end_if %>
- *	</li>
- *	<% end_control %>
+ *	      <% if LinkURL %><a href="$LinkURL" title="$LinkLabel">$Image.SetCroppedSize(237, 168)</a>
+ *	      <% else %>$Image.SetCroppedSize(237, 168)<% end_if %>
+ *	    </li>
+ *	  <% end_control %>
  *	</ul>
  *
  * @author simonwade
