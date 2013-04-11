@@ -114,7 +114,6 @@ class FeaturePageDecorator_Item extends DataObject {
 
 UploadFolderManager::setOptions('FeaturePageDecorator_Item', array(
 	'folder' => 'Uploads/FeatureItems',
-	'date' => null
 ));
 
 ?>
